@@ -1,0 +1,15 @@
+h4cc\AliceFixturesBundle\Tests\testdata\Contact:
+    contact0:
+        __construct: [@user0]
+
+h4cc\AliceFixturesBundle\Tests\testdata\Group:
+    group{0...1}:
+        name: <company()>
+        members: 20%? 3x @user*
+        owner: @user<current()>
+    group1:
+        name: <company()>
+        members: 3x @user*
+        owner: 1
+        contactPerson: @contact*->user
+        contactPersonName: <contactName($contactPerson)>

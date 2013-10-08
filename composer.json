@@ -1,0 +1,29 @@
+{
+    "name": "h4cc/alice-fixtures-bundle",
+    "description": "Symfony2 Bundle for loading fixture data with the Alice library.",
+    "keywords": ["Symfony2", "Fixtures", "ORM", "Alice", "Loader"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Julius Beckmann",
+            "email": "github@h4cc.de"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "nelmio/alice": "~1.5",
+        "doctrine/common": "~2.1",
+        "doctrine/orm": "~2.1",
+        "psr/log": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "h4cc\\AliceFixturesBundle": ""
+        }
+    },
+    "target-dir": "h4cc/AliceFixturesBundle"
+}

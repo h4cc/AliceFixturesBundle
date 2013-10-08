@@ -1,0 +1,29 @@
+h4cc\AliceFixturesBundle\Tests\testdata\User:
+    user0:
+        username: johnny
+        fullname: John Smith
+        birthDate: 1980-10-10
+        email: <email()>
+        favoriteNumber: 42
+    user{1..10}:
+        username: <username()>
+        fullname: <firstName()> <lastName()>
+        birthDate: 80%? <date> : 0000-00-00
+        email: <email()>
+        favoriteNumber: 40%? <randomNumber(1, 99)>
+
+h4cc\AliceFixturesBundle\Tests\testdata\Contact:
+    contact0:
+        __construct: [@user0]
+
+h4cc\AliceFixturesBundle\Tests\testdata\Group:
+    group{0...1}:
+        name: <company()>
+        members: 20%? 3x @user*
+        owner: @user<current()>
+    group1:
+        name: <company()>
+        members: 3x @user*
+        owner: 1
+        contactPerson: @contact*->user
+        contactPersonName: <contactName($contactPerson)>

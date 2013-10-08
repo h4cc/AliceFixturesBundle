@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <!-- Classes -->
+        <parameter key="h4cc_alice_fixtures.loader.factory.class">h4cc\AliceFixturesBundle\Loader\Factory</parameter>
+
+        <parameter key="h4cc_alice_fixtures.manager.class">h4cc\AliceFixturesBundle\Fixtures\FixtureManager</parameter>
+
+        <parameter key="h4cc_alice_fixtures.orm.doctrine.class">Nelmio\Alice\ORM\Doctrine</parameter>
+        <parameter key="h4cc_alice_fixtures.orm.schema_tool.class">h4cc\AliceFixturesBundle\ORM\SchemaTool</parameter>
+    </parameters>
+
+    <services>
+
+        <service id="h4cc_alice_fixtures.loader.factory" class="%h4cc_alice_fixtures.loader.factory.class%"/>
+
+        <service id="h4cc_alice_fixtures.manager" class="%h4cc_alice_fixtures.manager.class%">
+            <argument type="collection"/><!-- options -->
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="h4cc_alice_fixtures.loader.factory"/>
+            <argument type="service" id="h4cc_alice_fixtures.orm.schema_tool"/>
+            <argument type="service" id="logger" on-invalid="null" />
+        </service>
+
+        <service id="h4cc_alice_fixtures.orm.schema_tool" class="%h4cc_alice_fixtures.orm.schema_tool.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+    </services>
+
+</container>
