@@ -14,9 +14,30 @@ If you are searching for Bundle, that provides a way to integrate Alice with Doc
 This bundle is also capeable of recreating the ORM schema.
 This means _all_ tables managed by Doctrine will be dropped and recreated. A data loss might appear, you have been warned.
 
+
 ## Installation
 
-TODO: Register at Packagist and write composer installation howto.
+Simply require the bundle by its name with composer:
+```bash
+$ php composer.phar require h4cc/alice-fixtures-bundle
+```
+Follow the 'dev-master' branch for latest dev version. But i recommend to use more stable version tags if available.
+
+
+After that, add the Bundle to your Kernel:
+```php
+<?php
+// app/AppKernel.php
+
+public function registerBundles()
+{
+    $bundles = array(
+        // ...
+        new h4cc\AliceFixturesBundle\h4ccAliceFixturesBundle(),
+        // ...
+    );
+}
+```
 
 
 ## Configuration
