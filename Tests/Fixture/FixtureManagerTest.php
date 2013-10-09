@@ -1,11 +1,24 @@
 <?php
 
+/*
+ * This file is part of the h4cc/AliceFixtureBundle package.
+ *
+ * (c) Julius Beckmann <github@h4cc.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace h4cc\AliceFixturesBundle\Tests\Fixtures;
 
 use h4cc\AliceFixturesBundle\Fixtures\FixtureManager;
-use h4cc\AliceFixturesBundle\Processor\BarProcessor;
 use Nelmio\Alice\Loader\Yaml;
 
+/**
+ * Class FixtureManagerTest
+ *
+ * @author Julius Beckmann <github@h4cc.de>
+ */
 class FixtureManagerTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \h4cc\AliceFixturesBundle\Fixtures\FixtureManager */
@@ -51,7 +64,8 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
         $this->loggerMock = $this->getMockBuilder('\Psr\Log\LoggerInterface')
                             ->getMockForAbstractClass();
 
-        $this->manager = new FixtureManager(array(), $this->objectManagerMock, $this->factoryMock, $this->schemaToolMock, $this->loggerMock);
+        $this->manager = new FixtureManager(array(), $this->objectManagerMock, $this->factoryMock,
+            $this->schemaToolMock, $this->loggerMock);
 
         $this->processorMock = $this->getMockBuilder('\Nelmio\Alice\ProcessorInterface')
                                ->setMethods(array('preProcess', 'postProcess'))
@@ -128,7 +142,9 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
         $this->yamlLoaderMock->expects($this->once())->method('load')->will($this->returnValue(array()));
         $this->yamlLoaderMock->expects($this->once())->method('setProviders');
 
-        $provider = function() { return "foobar"; };
+        $provider = function () {
+            return "foobar";
+        };
 
         $this->manager->addProvider($provider);
         $this->manager->setProviders(array($provider));

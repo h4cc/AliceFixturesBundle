@@ -147,7 +147,7 @@ Preconfigured FixtureSet:
 <?php
 
 // Creating a fixture set with own configuration,
-$set = h4cc\AliceFixturesBundle\Fixtures\FixtureSet(array(
+$set = new h4cc\AliceFixturesBundle\Fixtures\FixtureSet(array(
     'locale' => 'de_DE',
     'seed' => 42,
     'do_drop' => true,

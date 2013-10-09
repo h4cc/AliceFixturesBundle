@@ -1,4 +1,14 @@
 <?xml version="1.0" ?>
+<!--
+
+This file is part of the h4cc/AliceFixtureBundle package.
+
+(c) Julius Beckmann <github@h4cc.de>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+-->
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
@@ -11,6 +21,7 @@
 
         <parameter key="h4cc_alice_fixtures.orm.doctrine.class">Nelmio\Alice\ORM\Doctrine</parameter>
         <parameter key="h4cc_alice_fixtures.orm.schema_tool.class">h4cc\AliceFixturesBundle\ORM\SchemaTool</parameter>
+        <parameter key="h4cc_alice_fixtures.orm.schema_tool.doctrine.class">Doctrine\ORM\Tools\SchemaTool</parameter>
     </parameters>
 
     <services>
@@ -26,6 +37,10 @@
         </service>
 
         <service id="h4cc_alice_fixtures.orm.schema_tool" class="%h4cc_alice_fixtures.orm.schema_tool.class%">
+            <argument type="service" id="h4cc_alice_fixtures.orm.schema_tool.doctrine" />
+        </service>
+
+        <service public="false" id="h4cc_alice_fixtures.orm.schema_tool.doctrine" class="%h4cc_alice_fixtures.orm.schema_tool.doctrine%">
             <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
     </services>

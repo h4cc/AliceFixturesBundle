@@ -1,14 +1,23 @@
 <?php
 
+/*
+ * This file is part of the h4cc/AliceFixtureBundle package.
+ *
+ * (c) Julius Beckmann <github@h4cc.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace h4cc\AliceFixturesBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * This is the class that validates and merges configuration from your app/config files
+ * Class Configuration
  *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
+ * @author Julius Beckmann <github@h4cc.de>
  */
 class Configuration implements ConfigurationInterface
 {

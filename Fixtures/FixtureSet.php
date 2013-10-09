@@ -1,16 +1,39 @@
 <?php
 
+/*
+ * This file is part of the h4cc/AliceFixtureBundle package.
+ *
+ * (c) Julius Beckmann <github@h4cc.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace h4cc\AliceFixturesBundle\Fixtures;
 
 /**
+ * Class FixtureSet
  * Set of files and options for import with FixtureManager.
+ *
+ * @author Julius Beckmann <github@h4cc.de>
  */
 class FixtureSet implements FixtureSetInterface
 {
+    /**
+     * @var array
+     */
     protected $files = array();
 
+    /**
+     * @var array
+     */
     protected $options;
 
+    /**
+     * See getDefaultOptions() for possible options.
+     *
+     * @param array $options
+     */
     public function __construct(array $options = array())
     {
         $defaultOptions = array(

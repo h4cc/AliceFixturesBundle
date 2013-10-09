@@ -18,7 +18,8 @@
         "psr/log": "~1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "~3.7",
+        "symfony/framework-bundle": "~2.1"
     },
     "autoload": {
         "psr-0": {

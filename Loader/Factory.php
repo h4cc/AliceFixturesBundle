@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * This file is part of the h4cc/AliceFixtureBundle package.
+ *
+ * (c) Julius Beckmann <github@h4cc.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace h4cc\AliceFixturesBundle\Loader;
 
@@ -7,7 +15,10 @@ use Nelmio\Alice\Loader\Base as BaseLoader;
 use Nelmio\Alice\Loader\Yaml as YamlLoader;
 
 /**
+ * Class Factory
  * Factory for loaders.
+ *
+ * @author Julius Beckmann <github@h4cc.de>
  */
 class Factory implements FactoryInterface
 {

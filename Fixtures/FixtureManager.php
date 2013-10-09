@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the h4cc/AliceFixtureBundle package.
+ *
+ * (c) Julius Beckmann <github@h4cc.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace h4cc\AliceFixturesBundle\Fixtures;
 
 use h4cc\AliceFixturesBundle\ORM\SchemaTool;
@@ -15,6 +24,12 @@ use Doctrine\Common\Persistence\ObjectManager;
 use h4cc\AliceFixturesBundle\Loader\Factory;
 use h4cc\AliceFixturesBundle\Loader\FactoryInterface;
 
+/**
+ * Class FixtureManager
+ * Manager for fixture files and also fixture sets.
+ *
+ * @author Julius Beckmann <github@h4cc.de>
+ */
 class FixtureManager implements FixtureManagerInterface
 {
     /**
@@ -88,7 +103,7 @@ class FixtureManager implements FixtureManagerInterface
     }
 
     /**
-     * Returns a new instance of a ORM Schema tool.
+     * Returns the  ORM Schema tool.
      *
      * @throws \InvalidArgumentException
      * @return SchemaTool
@@ -99,7 +114,7 @@ class FixtureManager implements FixtureManagerInterface
     }
 
     /**
-     * Returns a new instance of the ORM.
+     * Returns the ORM.
      *
      * @throws \InvalidArgumentException
      * @return Doctrine
@@ -122,7 +137,7 @@ class FixtureManager implements FixtureManagerInterface
             $type = $file['type'];
             if (!isset($loaders[$type])) {
                 $loader = $this->loaderFactory->getLoader($type, $set->getLocale());
-                $this->configureLoaderFromSet($loader, $set);
+                $this->configureLoader($loader);
                 $loaders[$type] = $loader;
                 $this->logDebug("Created loader for type '$type'.");
             }
@@ -137,7 +152,10 @@ class FixtureManager implements FixtureManagerInterface
 
             $loader = $loaders[$file['type']];
             $loader->setReferences($references);
-            $objects = array_merge($objects, $loader->load($file['path']));
+            $objects = array_merge(
+                $objects,
+                $loader->load($file['path'])
+            );
             $references = $loader->getReferences();
             $this->logDebug("Loaded file '".$file['path']."'.");
         }
@@ -151,6 +169,8 @@ class FixtureManager implements FixtureManagerInterface
     }
 
     /**
+     * Loads entites from file, does _not_ persist them.
+     *
      * @param array $files
      * @param string $type
      * @return array
@@ -202,7 +222,7 @@ class FixtureManager implements FixtureManagerInterface
     }
 
     /**
-     * Adds a processor for processing a entitiy before and after persisting.
+     * Adds a processor for processing a entity before and after persisting.
      *
      * @param ProcessorInterface $processor
      */
@@ -250,8 +270,6 @@ class FixtureManager implements FixtureManagerInterface
 
     /**
      * Initializes the seed for random numbers, given by a fixture set.
-     *
-     * @param FixtureSet $set
      */
     protected function initSeedFromSet(FixtureSet $set)
     {
@@ -265,12 +283,11 @@ class FixtureManager implements FixtureManagerInterface
     }
 
     /**
-     * Sets all needed options and dependencies to a loader given by a fixture set.
+     * Sets all needed options and dependencies to a loader.
      *
      * @param LoaderInterface $loader
-     * @param FixtureSet $set
      */
-    protected function configureLoaderFromSet(LoaderInterface $loader, FixtureSet $set)
+    protected function configureLoader(LoaderInterface $loader)
     {
         if ($loader instanceof Base) {
             $loader->setORM($this->getORM());
