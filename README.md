@@ -94,8 +94,6 @@ $set->setDoPersist(true);
 // Enable dropping and recreating current ORM schema.
 $set->setDoDrop(true);
 
-$files = array(__DIR__.'/fixtures/Users.yml', __DIR__.'/fixtures/Articles.yml');
-
 $manager->load($set);
 ```
 
