@@ -1,0 +1,54 @@
+tools:
+    php_code_coverage:
+        enabled: true
+        config_path: ~
+        test_command: phpunit
+        filter:
+            excluded_paths:
+                - '*/Tests/*'
+    php_mess_detector:
+        enabled: true
+        extensions:
+            - php
+        command: phpmd
+        filter:
+            paths: {  }
+            excluded_paths:
+                - '*/Tests/*'
+        config:
+            rulesets:
+                - codesize
+    php_cs_fixer:
+        enabled: true
+        extensions:
+            - php
+        command: php-cs-fixer
+        config:
+            level: psr2
+    php_analyzer:
+        enabled: true
+        filter:
+            excluded_paths:
+                - '*/Tests/*'
+        extensions:
+            - php
+    php_code_sniffer:
+        enabled: true
+        config:
+            standard: PSR2
+        extensions:
+            - php
+        command: phpcs
+        filter:
+            excluded_paths:
+                - '*/Tests/*'
+    sensiolabs_security_checker:
+        enabled: true
+    php_pdepend:
+        command: pdepend
+        configuration_file:   ~
+        suffixes:
+            - php
+        excluded_dirs:
+            - vendor
+        enabled: true
