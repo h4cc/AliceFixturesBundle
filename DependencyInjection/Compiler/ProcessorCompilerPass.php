@@ -30,6 +30,7 @@ class ProcessorCompilerPass implements CompilerPassInterface
 
         $definition = $container->getDefinition('h4cc_alice_fixtures.manager');
 
+        /** @SuppressWarnings(PHPMD.UnusedLocalVariable) */
         foreach ($container->findTaggedServiceIds('h4cc_alice_fixtures.processor') as $id => $attributes) {
             $definition->addMethodCall('addProcessor', array(new Reference($id)));
         }

@@ -26,7 +26,7 @@ interface FixtureManagerInterface
      * @param string $type
      * @return array
      */
-    public function loadFiles(array $files, $type='yaml');
+    public function loadFiles(array $files, $type = 'yaml');
 
     /**
      * Creates a new configured fixture set.
@@ -52,5 +52,5 @@ interface FixtureManagerInterface
      * @param bool $drop
      * @return mixed
      */
-    public function persist(array $entities, $drop=false);
+    public function persist(array $entities, $drop = false);
 }

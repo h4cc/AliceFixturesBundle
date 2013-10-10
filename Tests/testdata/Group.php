@@ -5,12 +5,19 @@ namespace h4cc\AliceFixturesBundle\Tests\testdata;
 class Group
 {
     private $name;
+
     private $owner;
+
     private $members = array();
+
     private $creationDate;
+
     private $contactEmail;
+
     private $supportEmails = array();
+
     public $contactPerson;
+
     public $contactPersonName;
 
     public function getName()

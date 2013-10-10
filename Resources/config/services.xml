@@ -29,19 +29,21 @@ file that was distributed with this source code.
         <service id="h4cc_alice_fixtures.loader.factory" class="%h4cc_alice_fixtures.loader.factory.class%"/>
 
         <service id="h4cc_alice_fixtures.manager" class="%h4cc_alice_fixtures.manager.class%">
-            <argument type="collection"/><!-- options -->
+            <argument type="collection"/>
+            <!-- options -->
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="h4cc_alice_fixtures.loader.factory"/>
             <argument type="service" id="h4cc_alice_fixtures.orm.schema_tool"/>
-            <argument type="service" id="logger" on-invalid="null" />
+            <argument type="service" id="logger" on-invalid="null"/>
         </service>
 
         <service id="h4cc_alice_fixtures.orm.schema_tool" class="%h4cc_alice_fixtures.orm.schema_tool.class%">
-            <argument type="service" id="h4cc_alice_fixtures.orm.schema_tool.doctrine" />
+            <argument type="service" id="h4cc_alice_fixtures.orm.schema_tool.doctrine"/>
         </service>
 
-        <service public="false" id="h4cc_alice_fixtures.orm.schema_tool.doctrine" class="%h4cc_alice_fixtures.orm.schema_tool.doctrine%">
-            <argument type="service" id="doctrine.orm.entity_manager" />
+        <service public="false" id="h4cc_alice_fixtures.orm.schema_tool.doctrine"
+                 class="%h4cc_alice_fixtures.orm.schema_tool.doctrine%">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
         </service>
     </services>
 

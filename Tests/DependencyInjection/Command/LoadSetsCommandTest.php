@@ -24,6 +24,7 @@ use Symfony\Component\DependencyInjection\Container;
 class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
 {
     private $application;
+
     private $command;
 
     /** @var  \PHPUnit_Framework_MockObject_MockObject */
@@ -32,8 +33,8 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->managerMock = $this->getMockBuilder('\h4cc\AliceFixturesBundle\Fixtures\FixtureManagerInterface')
-                       ->setMethods(array('load'))
-                       ->getMockForAbstractClass();
+                             ->setMethods(array('load'))
+                             ->getMockForAbstractClass();
 
         $this->application = new Application();
         $this->application->add(new LoadSetsCommand());
@@ -52,7 +53,7 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
         $tester = new CommandTester($this->command);
 
         $tester->execute(
-            array('command' => $this->command->getName(), 'sets' => array(__DIR__.'/../../testdata/SimpleSet.php'))
+            array('command' => $this->command->getName(), 'sets' => array(__DIR__ . '/../../testdata/SimpleSet.php'))
         );
     }
 
@@ -64,7 +65,7 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
         $tester = new CommandTester($this->command);
 
         $tester->execute(
-            array('command' => $this->command->getName(), 'sets' => array(__DIR__.'/../../testdata/InvalidSet.php'))
+            array('command' => $this->command->getName(), 'sets' => array(__DIR__ . '/../../testdata/InvalidSet.php'))
         );
     }
 

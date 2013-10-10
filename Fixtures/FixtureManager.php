@@ -157,12 +157,12 @@ class FixtureManager implements FixtureManagerInterface
                 $loader->load($file['path'])
             );
             $references = $loader->getReferences();
-            $this->logDebug("Loaded file '".$file['path']."'.");
+            $this->logDebug("Loaded file '" . $file['path'] . "'.");
         }
 
         if ($set->getDoPersist()) {
             $this->persist($objects, $set->getDoDrop());
-            $this->logDebug("Persisted ".count($objects)." loaded objects.");
+            $this->logDebug("Persisted " . count($objects) . " loaded objects.");
         }
 
         return $objects;
@@ -229,7 +229,7 @@ class FixtureManager implements FixtureManagerInterface
     public function addProcessor(ProcessorInterface $processor)
     {
         $this->processors[] = $processor;
-        $this->logDebug('Added processor: '.get_class($processor));
+        $this->logDebug('Added processor: ' . get_class($processor));
     }
 
     /**
@@ -241,7 +241,7 @@ class FixtureManager implements FixtureManagerInterface
     {
         $this->providers[] = $provider;
         $this->providers = array_unique($this->providers);
-        $this->logDebug('Added provider: '.get_class($provider));
+        $this->logDebug('Added provider: ' . get_class($provider));
     }
 
     /**
@@ -252,7 +252,7 @@ class FixtureManager implements FixtureManagerInterface
     public function setProviders(array $providers)
     {
         $this->providers = array();
-        foreach($providers as $provider) {
+        foreach ($providers as $provider) {
             $this->addProvider($provider);
         }
     }
@@ -275,7 +275,7 @@ class FixtureManager implements FixtureManagerInterface
     {
         if (is_numeric($set->getSeed())) {
             mt_srand($set->getSeed());
-            $this->logDebug('Initialized with seed '.$set->getSeed());
+            $this->logDebug('Initialized with seed ' . $set->getSeed());
         } else {
             mt_srand();
             $this->logDebug('Initialized with random seed');

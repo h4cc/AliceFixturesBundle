@@ -30,20 +30,20 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('h4cc_alice_fixtures');
 
         $rootNode
-            ->children()
-                ->scalarNode('locale')
-                    ->defaultValue('en_EN')
-                    ->info('Locale which will be used by faker for randomized data.')
-                ->end()
-                ->scalarNode('seed')
-                    ->defaultValue(1)
-                    ->info('A seed to make sure Faker generates data consistently across runs, set to "null" to disable.')
-                ->end()
-                ->scalarNode('do_flush')
-                    ->defaultValue(true)
-                    ->info('Set to false if no ORM flushes should be made.')
-                ->end()
-            ->end();
+        ->children()
+        ->scalarNode('locale')
+        ->defaultValue('en_EN')
+        ->info('Locale which will be used by faker for randomized data.')
+        ->end()
+        ->scalarNode('seed')
+        ->defaultValue(1)
+        ->info('A seed to make sure Faker generates data consistently across runs, set to "null" to disable.')
+        ->end()
+        ->scalarNode('do_flush')
+        ->defaultValue(true)
+        ->info('Set to false if no ORM flushes should be made.')
+        ->end()
+        ->end();
 
         return $treeBuilder;
     }

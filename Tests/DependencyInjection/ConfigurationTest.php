@@ -30,8 +30,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $options = $node->getChildren();
         $this->assertCount(3, $options);
-        $this->assertEquals('en_EN',    $options['locale']->getDefaultValue());
-        $this->assertEquals(1,          $options['seed']->getDefaultValue());
-        $this->assertEquals(true,       $options['do_flush']->getDefaultValue());
+        $this->assertEquals('en_EN', $options['locale']->getDefaultValue());
+        $this->assertEquals(1, $options['seed']->getDefaultValue());
+        $this->assertEquals(true, $options['do_flush']->getDefaultValue());
     }
 }

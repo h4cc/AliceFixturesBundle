@@ -32,7 +32,7 @@ class Factory implements FactoryInterface
      */
     public function getLoader($type, $locale)
     {
-        switch($type) {
+        switch ($type) {
             case 'yaml':
                 return $this->newLoaderYaml($locale);
             case 'php':

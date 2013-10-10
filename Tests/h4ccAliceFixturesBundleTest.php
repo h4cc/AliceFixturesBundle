@@ -31,7 +31,8 @@ class h4ccAliceFixturesBundleTest extends \PHPUnit_Framework_TestCase
                          ->disableOriginalConstructor()
                          ->getMock();
 
-        $containerMock->expects($this->at(0))->method('addCompilerPass')->will($this->returnCallback(
+        $containerMock->expects($this->at(0))->method('addCompilerPass')->will(
+            $this->returnCallback(
                 function ($pass) {
                     if (!$pass instanceof ProviderCompilerPass) {
                         throw new \Exception("Not a ProviderCompilerPass.");
@@ -40,7 +41,8 @@ class h4ccAliceFixturesBundleTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $containerMock->expects($this->at(1))->method('addCompilerPass')->will($this->returnCallback(
+        $containerMock->expects($this->at(1))->method('addCompilerPass')->will(
+            $this->returnCallback(
                 function ($pass) {
                     if (!$pass instanceof ProcessorCompilerPass) {
                         throw new \Exception("Not a ProcessorCompilerPass.");

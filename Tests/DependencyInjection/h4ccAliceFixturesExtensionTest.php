@@ -42,7 +42,7 @@ class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
             'h4cc_alice_fixtures.orm.schema_tool',
         );
 
-        foreach($publicServiceIds as $id) {
+        foreach ($publicServiceIds as $id) {
             $this->assertTrue($container->has($id));
         }
     }

@@ -5,10 +5,15 @@ namespace h4cc\AliceFixturesBundle\Tests\testdata;
 class User
 {
     public $username;
+
     public $fullname;
+
     public $birthDate;
+
     public $email;
+
     public $favoriteNumber;
+
     public $friends;
 
     public function __construct($username = null, $email = null, \DateTime $birthDate = null)

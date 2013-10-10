@@ -30,6 +30,7 @@ class ProviderCompilerPass implements CompilerPassInterface
 
         $definition = $container->getDefinition('h4cc_alice_fixtures.manager');
 
+        /** @SuppressWarnings(PHPMD.UnusedLocalVariable) */
         foreach ($container->findTaggedServiceIds('h4cc_alice_fixtures.provider') as $id => $attributes) {
             $definition->addMethodCall('addProvider', array(new Reference($id)));
         }
