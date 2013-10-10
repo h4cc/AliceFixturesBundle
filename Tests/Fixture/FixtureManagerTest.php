@@ -64,8 +64,13 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
         $this->loggerMock = $this->getMockBuilder('\Psr\Log\LoggerInterface')
                             ->getMockForAbstractClass();
 
-        $this->manager = new FixtureManager(array(), $this->objectManagerMock, $this->factoryMock,
-            $this->schemaToolMock, $this->loggerMock);
+        $this->manager = new FixtureManager(
+            array(),
+            $this->objectManagerMock,
+            $this->factoryMock,
+            $this->schemaToolMock,
+            $this->loggerMock
+        );
 
         $this->processorMock = $this->getMockBuilder('\Nelmio\Alice\ProcessorInterface')
                                ->setMethods(array('preProcess', 'postProcess'))

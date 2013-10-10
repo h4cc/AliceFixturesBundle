@@ -76,7 +76,7 @@ class FixtureManager implements FixtureManagerInterface
      * @param LoggerInterface $logger
      */
     public function __construct(
-        array $options = array(),
+        array $options,
         ObjectManager $objectManager,
         FactoryInterface $loaderFactory,
         SchemaToolInterface $schemaTool,

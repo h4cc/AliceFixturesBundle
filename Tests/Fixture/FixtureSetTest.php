@@ -33,12 +33,14 @@ class FixtureSetTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $set = new FixtureSet(array(
-            'locale' => 'de_DE',
-            'seed' => 42,
-            'do_drop' => true,
-            'do_persist' => false,
-        ));
+        $set = new FixtureSet(
+            array(
+                'locale' => 'de_DE',
+                'seed' => 42,
+                'do_drop' => true,
+                'do_persist' => false,
+            )
+        );
 
         $this->assertEquals('de_DE', $set->getLocale());
         $this->assertEquals(42, $set->getSeed());
