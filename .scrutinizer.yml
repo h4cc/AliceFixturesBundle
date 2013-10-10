@@ -8,6 +8,7 @@ tools:
         filter:
             excluded_paths:
                 - '*/Tests/*'
+                - 'vendor/*'
     php_mess_detector:
         enabled: true
         extensions:
@@ -17,21 +18,16 @@ tools:
             paths: {  }
             excluded_paths:
                 - '*/Tests/*'
+                - 'vendor/*'
         config:
             rulesets:
                 - codesize
-    php_cs_fixer:
-        enabled: true
-        extensions:
-            - php
-        command: php-cs-fixer
-        config:
-            level: psr2
     php_analyzer:
         enabled: true
         filter:
             excluded_paths:
                 - '*/Tests/*'
+                - 'vendor/*'
         extensions:
             - php
     php_code_sniffer:
@@ -44,6 +40,7 @@ tools:
         filter:
             excluded_paths:
                 - '*/Tests/*'
+                - 'vendor/*'
     sensiolabs_security_checker:
         enabled: true
     php_pdepend:
