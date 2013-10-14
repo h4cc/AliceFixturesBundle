@@ -17,7 +17,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
- * Class LoadSetsCommandTest
+ * Class LoadSetsCommandTest.
  *
  * @author Julius Beckmann <github@h4cc.de>
  */
