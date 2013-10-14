@@ -6,6 +6,7 @@ A Symfony2 bundle for flexible usage of Alice and Faker in Symfony2.
 [![Build Status](https://travis-ci.org/h4cc/AliceFixturesBundle.png?branch=master)](https://travis-ci.org/h4cc/AliceFixturesBundle)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/h4cc/AliceFixturesBundle/badges/quality-score.png?s=2f90c394022338ad406685a575f6ac7ebcde2a2e)](https://scrutinizer-ci.com/g/h4cc/AliceFixturesBundle/)
 [![Code Coverage](https://scrutinizer-ci.com/g/h4cc/AliceFixturesBundle/badges/coverage.png?s=9bf0abf8ef0ecf41d6187cb8cebca02520fb7150)](https://scrutinizer-ci.com/g/h4cc/AliceFixturesBundle/)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/bcd3cd50-845f-41d3-afbd-93e0a39f03c7/mini.png)](https://insight.sensiolabs.com/projects/bcd3cd50-845f-41d3-afbd-93e0a39f03c7)
 
 ## Introduction
 
