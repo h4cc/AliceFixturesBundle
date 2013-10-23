@@ -38,11 +38,12 @@ file that was distributed with this source code.
         </service>
 
         <service id="h4cc_alice_fixtures.orm.schema_tool" class="%h4cc_alice_fixtures.orm.schema_tool.class%">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="h4cc_alice_fixtures.orm.schema_tool.doctrine"/>
         </service>
 
         <service public="false" id="h4cc_alice_fixtures.orm.schema_tool.doctrine"
-                 class="%h4cc_alice_fixtures.orm.schema_tool.doctrine%">
+                 class="%h4cc_alice_fixtures.orm.schema_tool.doctrine.class%">
             <argument type="service" id="doctrine.orm.entity_manager"/>
         </service>
     </services>
