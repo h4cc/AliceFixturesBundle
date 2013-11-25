@@ -28,10 +28,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $node = $tree->buildTree();
         $this->assertEquals('h4cc_alice_fixtures', $node->getName());
 
+        /** @var $options \Symfony\Component\Config\Definition\ScalarNode[] */
         $options = $node->getChildren();
-        $this->assertCount(3, $options);
+        $this->assertCount(4, $options);
         $this->assertEquals('en_EN', $options['locale']->getDefaultValue());
         $this->assertEquals(1, $options['seed']->getDefaultValue());
         $this->assertEquals(true, $options['do_flush']->getDefaultValue());
+        $this->assertEquals('doctrine.orm.entity_manager', $options['object_manager']->getDefaultValue());
     }
 }

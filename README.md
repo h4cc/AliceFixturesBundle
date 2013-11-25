@@ -54,10 +54,14 @@ if ORM flushes of entities should be omitted or not.
 # app/config/config.yml
 
 h4cc_alice_fixtures:
-    locale: en_US   # default
-    seed: 1         # default
-    do_flush: true  # default
+    object_manager: doctrine.orm.entity_manager # default
+    locale: en_US                               # default
+    seed: 1                                     # default
+    do_flush: true                              # default
 ```
+
+In case you want to use doctrine_mongodb, change `object_manager` to 'doctrine_mongodb.odm.document_manager'.
+
 
 ## Usage
 

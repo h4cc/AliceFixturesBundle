@@ -13,6 +13,7 @@ namespace h4cc\AliceFixturesBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -33,6 +34,9 @@ class h4ccAliceFixturesExtension extends Extension
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
+        $container->getDefinition('h4cc_alice_fixtures.manager')->replaceArgument(1, new Reference($config['object_manager']));
+        unset($config['object_manager']);
 
         $container->getDefinition('h4cc_alice_fixtures.manager')->replaceArgument(0, $config);
     }

@@ -43,6 +43,10 @@ class Configuration implements ConfigurationInterface
         ->defaultValue(true)
         ->info('Set to false if no ORM flushes should be made.')
         ->end()
+        ->scalarNode('object_manager')
+        ->defaultValue('doctrine.orm.entity_manager')
+        ->info('Service id of the used object manager.')
+        ->end()
         ->end();
 
         return $treeBuilder;
