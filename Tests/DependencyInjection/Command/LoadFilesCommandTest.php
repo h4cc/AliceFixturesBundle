@@ -37,16 +37,16 @@ class LoadFilesCommandTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->managerMock = $this->getMockBuilder('\h4cc\AliceFixturesBundle\Fixtures\FixtureManagerInterface')
-                             ->setMethods(array('load', 'createFixtureSet'))
-                             ->getMockForAbstractClass();
+          ->setMethods(array('load', 'createFixtureSet'))
+          ->getMockForAbstractClass();
 
         $this->managerMock->expects($this->any())->method('createFixtureSet')->will(
             $this->returnValue(new FixtureSet())
         );
 
         $this->schemaToolMock = $this->getMockBuilder('\h4cc\AliceFixturesBundle\ORM\SchemaToolInterface')
-                                ->setMethods(array('dropSchema', 'createSchema'))
-                                ->getMockForAbstractClass();
+          ->setMethods(array('dropSchema', 'createSchema'))
+          ->getMockForAbstractClass();
 
         $this->application = new Application();
         $this->application->add(new LoadFilesCommand());

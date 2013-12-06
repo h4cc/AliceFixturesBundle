@@ -33,8 +33,8 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->managerMock = $this->getMockBuilder('\h4cc\AliceFixturesBundle\Fixtures\FixtureManagerInterface')
-                             ->setMethods(array('load'))
-                             ->getMockForAbstractClass();
+          ->setMethods(array('load'))
+          ->getMockForAbstractClass();
 
         $this->application = new Application();
         $this->application->add(new LoadSetsCommand());

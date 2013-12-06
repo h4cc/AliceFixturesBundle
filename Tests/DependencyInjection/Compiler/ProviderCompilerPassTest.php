@@ -12,7 +12,6 @@
 namespace h4cc\AliceFixturesBundle\Tests\DependencyInjection\Compiler;
 
 use h4cc\AliceFixturesBundle\DependencyInjection\Compiler\ProviderCompilerPass;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Class ProviderCompilerPassTest
@@ -32,22 +31,22 @@ class ProviderCompilerPassTest extends \PHPUnit_Framework_TestCase
         $this->compilerPass = new ProviderCompilerPass();
 
         $this->containerMock = $this->getMockBuilder('\Symfony\Component\DependencyInjection\ContainerBuilder')
-                               ->setMethods(array('hasDefinition', 'getDefinition', 'findTaggedServiceIds'))
-                               ->disableOriginalConstructor()
-                               ->getMock();
+          ->setMethods(array('hasDefinition', 'getDefinition', 'findTaggedServiceIds'))
+          ->disableOriginalConstructor()
+          ->getMock();
     }
 
     public function testProcess()
     {
         $this->containerMock->expects($this->once())->method('hasDefinition')
-        ->with('h4cc_alice_fixtures.manager')->will($this->returnValue(true));
+          ->with('h4cc_alice_fixtures.manager')->will($this->returnValue(true));
 
         $definitionMock = $this->getMockBuilder('\Symfony\Component\DependencyInjection\Definition')
-                          ->setMethods(array('addMethodCall'))
-                          ->disableOriginalConstructor()
-                          ->getMock();
+          ->setMethods(array('addMethodCall'))
+          ->disableOriginalConstructor()
+          ->getMock();
         $this->containerMock->expects($this->once())->method('getDefinition')
-        ->with('h4cc_alice_fixtures.manager')->will($this->returnValue($definitionMock));
+          ->with('h4cc_alice_fixtures.manager')->will($this->returnValue($definitionMock));
 
         $taggedServices = array(
             'id1' => 'attributes1',
@@ -55,7 +54,7 @@ class ProviderCompilerPassTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->containerMock->expects($this->once())->method('findTaggedServiceIds')
-        ->with('h4cc_alice_fixtures.provider')->will($this->returnValue($taggedServices));
+          ->with('h4cc_alice_fixtures.provider')->will($this->returnValue($taggedServices));
 
         $definitionMock->expects($this->exactly(2))->method('addMethodCall');
 

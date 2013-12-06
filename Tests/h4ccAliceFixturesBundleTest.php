@@ -11,8 +11,6 @@
 
 namespace h4cc\AliceFixturesBundle\Tests;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-
 use h4cc\AliceFixturesBundle\h4ccAliceFixturesBundle;
 use h4cc\AliceFixturesBundle\DependencyInjection\Compiler\ProviderCompilerPass;
 use h4cc\AliceFixturesBundle\DependencyInjection\Compiler\ProcessorCompilerPass;
@@ -27,9 +25,9 @@ class h4ccAliceFixturesBundleTest extends \PHPUnit_Framework_TestCase
     public function testBuild()
     {
         $containerMock = $this->getMockBuilder('\Symfony\Component\DependencyInjection\ContainerBuilder')
-                         ->setMethods(array('addCompilerPass'))
-                         ->disableOriginalConstructor()
-                         ->getMock();
+          ->setMethods(array('addCompilerPass'))
+          ->disableOriginalConstructor()
+          ->getMock();
 
         $containerMock->expects($this->at(0))->method('addCompilerPass')->will(
             $this->returnCallback(

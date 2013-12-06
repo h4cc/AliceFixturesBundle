@@ -11,18 +11,17 @@
 
 namespace h4cc\AliceFixturesBundle\Fixtures;
 
-use h4cc\AliceFixturesBundle\ORM\SchemaTool;
-use h4cc\AliceFixturesBundle\ORM\SchemaToolInterface;
 use Nelmio\Alice\Fixtures;
 use Nelmio\Alice\Loader\Base;
 use Nelmio\Alice\LoaderInterface;
-use Nelmio\Alice\ORM\Doctrine;
 use Nelmio\Alice\ORMInterface;
 use Nelmio\Alice\ProcessorInterface;
 use Psr\Log\LoggerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use h4cc\AliceFixturesBundle\Loader\Factory;
+use h4cc\AliceFixturesBundle\ORM\SchemaTool;
+use h4cc\AliceFixturesBundle\ORM\SchemaToolInterface;
 use h4cc\AliceFixturesBundle\Loader\FactoryInterface;
+use h4cc\AliceFixturesBundle\ORM\Doctrine;
 
 /**
  * Class FixtureManager
@@ -38,31 +37,26 @@ class FixtureManager implements FixtureManagerInterface
      * @var array
      */
     protected $providers = array();
-
     /**
      * @var ProcessorInterface[]
      */
     protected $processors = array();
-
     /**
      * Optional logger.
      *
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
-
     /**
      * Default options for new FixtureSets.
      *
      * @var array
      */
     protected $options = array();
-
     /**
      * @var \Nelmio\Alice\ORM\Doctrine
      */
     protected $orm;
-
     /**
      * @var SchemaToolInterface
      */
@@ -71,7 +65,7 @@ class FixtureManager implements FixtureManagerInterface
     /**
      * @param array $options
      * @param ObjectManager $objectManager
-     * @param \h4cc\AliceFixturesBundle\Loader\Factory|\h4cc\AliceFixturesBundle\Loader\FactoryInterface $loaderFactory
+     * @param \h4cc\AliceFixturesBundle\Loader\FactoryInterface $loaderFactory
      * @param \h4cc\AliceFixturesBundle\ORM\SchemaToolInterface $schemaTool
      * @param LoggerInterface $logger
      */
@@ -81,7 +75,8 @@ class FixtureManager implements FixtureManagerInterface
         FactoryInterface $loaderFactory,
         SchemaToolInterface $schemaTool,
         LoggerInterface $logger = null
-    ) {
+    )
+    {
         $this->options = array_merge(
             $this->getDefaultOptions(),
             $options
@@ -93,6 +88,36 @@ class FixtureManager implements FixtureManagerInterface
     }
 
     /**
+     * @return array
+     */
+    public function getDefaultOptions()
+    {
+        return array(
+            'seed' => 1,
+            'locale' => 'en_EN',
+            'do_flush' => true,
+        );
+    }
+
+    /**
+     * Loads entites from file, does _not_ persist them.
+     *
+     * @param array $files
+     * @param string $type
+     * @return array
+     */
+    public function loadFiles(array $files, $type = 'yaml')
+    {
+        $set = $this->createFixtureSet();
+        foreach ($files as $file) {
+            $set->addFile($file, $type);
+        }
+        $set->setDoPersist(false);
+
+        return $this->load($set);
+    }
+
+    /**
      * Returns a new configured fixture set.
      *
      * @return FixtureSet
@@ -100,28 +125,6 @@ class FixtureManager implements FixtureManagerInterface
     public function createFixtureSet()
     {
         return new FixtureSet($this->options);
-    }
-
-    /**
-     * Returns the  ORM Schema tool.
-     *
-     * @throws \InvalidArgumentException
-     * @return SchemaTool
-     */
-    public function getSchemaTool()
-    {
-        return $this->schemaTool;
-    }
-
-    /**
-     * Returns the ORM.
-     *
-     * @throws \InvalidArgumentException
-     * @return Doctrine
-     */
-    public function getORM()
-    {
-        return $this->orm;
     }
 
     /**
@@ -145,51 +148,41 @@ class FixtureManager implements FixtureManagerInterface
 
         // Load files
         $references = array();
-        $objects = array();
         foreach ($set->getFiles() as $file) {
             // Use seed before each loading, so results will be more predictable.
             $this->initSeedFromSet($set);
 
             $loader = $loaders[$file['type']];
             $loader->setReferences($references);
-            $objects = array_merge(
-                $objects,
-                $loader->load($file['path'])
-            );
+            $loader->load($file['path']);
             $references = $loader->getReferences();
             $this->logDebug("Loaded file '" . $file['path'] . "'.");
         }
 
         if ($set->getDoPersist()) {
-            $this->persist($objects, $set->getDoDrop());
-            $this->logDebug("Persisted " . count($objects) . " loaded objects.");
+            $this->persist($references, $set->getDoDrop());
+            $this->logDebug("Persisted " . count($references) . " loaded objects.");
         }
 
-        return $objects;
+        // Detach entities
+        $this->orm->detach($references);
+
+        return $references;
     }
 
     /**
-     * Loads entites from file, does _not_ persist them.
+     * Returns the ORM.
      *
-     * @param array $files
-     * @param string $type
-     * @return array
+     * @throws \InvalidArgumentException
+     * @return Doctrine
      */
-    public function loadFiles(array $files, $type = 'yaml')
+    public function getORM()
     {
-        $set = $this->createFixtureSet();
-        foreach ($files as $file) {
-            $set->addFile($file, $type);
-        }
-        return $this->load($set);
+        return $this->orm;
     }
 
     /**
-     * Persists all given entities.
-     *
-     * @param array $entities
-     * @param bool $drop
-     * @return mixed
+     * {@inheritDoc}
      */
     public function persist(array $entities, $drop = false)
     {
@@ -197,6 +190,25 @@ class FixtureManager implements FixtureManagerInterface
             $this->recreateSchema();
         }
         $this->persistObjects($this->getORM(), $entities);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function remove(array $entities)
+    {
+        $this->getORM()->remove($entities);
+    }
+
+    /**
+     * Returns the  ORM Schema tool.
+     *
+     * @throws \InvalidArgumentException
+     * @return SchemaTool
+     */
+    public function getSchemaTool()
+    {
+        return $this->schemaTool;
     }
 
     /**
@@ -210,18 +222,6 @@ class FixtureManager implements FixtureManagerInterface
     }
 
     /**
-     * @return array
-     */
-    public function getDefaultOptions()
-    {
-        return array(
-            'seed' => 1,
-            'locale' => 'en_EN',
-            'do_flush' => true,
-        );
-    }
-
-    /**
      * Adds a processor for processing a entity before and after persisting.
      *
      * @param ProcessorInterface $processor
@@ -230,18 +230,6 @@ class FixtureManager implements FixtureManagerInterface
     {
         $this->processors[] = $processor;
         $this->logDebug('Added processor: ' . get_class($processor));
-    }
-
-    /**
-     * Adds a provider for Faker.
-     *
-     * @param $provider
-     */
-    public function addProvider($provider)
-    {
-        $this->providers[] = $provider;
-        $this->providers = array_unique($this->providers);
-        $this->logDebug('Added provider: ' . get_class($provider));
     }
 
     /**
@@ -258,14 +246,43 @@ class FixtureManager implements FixtureManagerInterface
     }
 
     /**
-     * Will drop and create the current ORM Schema.
+     * Adds a provider for Faker.
+     *
+     * @param $provider
      */
-    protected function recreateSchema()
+    public function addProvider($provider)
     {
-        $schemaTool = $this->getSchemaTool();
-        $schemaTool->dropSchema();
-        $schemaTool->createSchema();
-        $this->logDebug('Recreated Schema');
+        $this->providers[] = $provider;
+        $this->providers = array_unique($this->providers);
+        $this->logDebug('Added provider: ' . get_class($provider));
+    }
+
+    /**
+     * Sets all needed options and dependencies to a loader.
+     *
+     * @param LoaderInterface $loader
+     */
+    protected function configureLoader(LoaderInterface $loader)
+    {
+        if ($loader instanceof Base) {
+            $loader->setORM($this->getORM());
+            if ($this->logger) {
+                $loader->setLogger($this->logger);
+            }
+        }
+        $loader->setProviders($this->providers);
+    }
+
+    /**
+     * Logs a message in debug level.
+     *
+     * @param $message
+     */
+    protected function logDebug($message)
+    {
+        if ($this->logger) {
+            $this->logger->debug($message);
+        }
     }
 
     /**
@@ -283,19 +300,14 @@ class FixtureManager implements FixtureManagerInterface
     }
 
     /**
-     * Sets all needed options and dependencies to a loader.
-     *
-     * @param LoaderInterface $loader
+     * Will drop and create the current ORM Schema.
      */
-    protected function configureLoader(LoaderInterface $loader)
+    protected function recreateSchema()
     {
-        if ($loader instanceof Base) {
-            $loader->setORM($this->getORM());
-            if ($this->logger) {
-                $loader->setLogger($this->logger);
-            }
-        }
-        $loader->setProviders($this->providers);
+        $schemaTool = $this->getSchemaTool();
+        $schemaTool->dropSchema();
+        $schemaTool->createSchema();
+        $this->logDebug('Recreated Schema');
     }
 
     /**
@@ -318,18 +330,6 @@ class FixtureManager implements FixtureManagerInterface
             foreach ($objects as $obj) {
                 $proc->postProcess($obj);
             }
-        }
-    }
-
-    /**
-     * Logs a message in debug level.
-     *
-     * @param $message
-     */
-    protected function logDebug($message)
-    {
-        if ($this->logger) {
-            $this->logger->debug($message);
         }
     }
 }

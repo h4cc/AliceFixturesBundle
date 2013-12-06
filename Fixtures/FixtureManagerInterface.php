@@ -53,4 +53,11 @@ interface FixtureManagerInterface
      * @return mixed
      */
     public function persist(array $entities, $drop = false);
+
+    /**
+     * Remove all given entities.
+     *
+     * @param array $entities
+     */
+    public function remove(array $entities);
 }

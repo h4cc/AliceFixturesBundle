@@ -36,10 +36,10 @@ class h4ccAliceFixturesExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->getDefinition('h4cc_alice_fixtures.manager')
-                  ->replaceArgument(1, new Reference($config['object_manager']));
+          ->replaceArgument(1, new Reference($config['object_manager']));
         unset($config['object_manager']);
 
         $container->getDefinition('h4cc_alice_fixtures.manager')
-                  ->replaceArgument(0, $config);
+          ->replaceArgument(0, $config);
     }
 }

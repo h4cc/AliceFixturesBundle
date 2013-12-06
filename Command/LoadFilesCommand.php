@@ -27,14 +27,14 @@ class LoadFilesCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-        ->setName('h4cc_alice_fixtures:load:files')
-        ->setDescription('Load fixture files using alice and faker.')
-        ->addArgument('files', InputArgument::IS_ARRAY, 'List of files to import.')
-        ->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'Type of loader. Can be "yaml" or "php".', 'yaml')
-        ->addOption('seed', null, InputOption::VALUE_OPTIONAL, 'Seed for random generator.', 1)
-        ->addOption('locale', 'l', InputOption::VALUE_OPTIONAL, 'Locale for Faker provider.', 'en_EN')
-        ->addOption('persist', 'p', InputOption::VALUE_OPTIONAL, 'Persist loaded entities in database.', true)
-        ->addOption('drop', 'd', InputOption::VALUE_OPTIONAL, 'Drop and create Schema before loading.', false);
+          ->setName('h4cc_alice_fixtures:load:files')
+          ->setDescription('Load fixture files using alice and faker.')
+          ->addArgument('files', InputArgument::IS_ARRAY, 'List of files to import.')
+          ->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'Type of loader. Can be "yaml" or "php".', 'yaml')
+          ->addOption('seed', null, InputOption::VALUE_OPTIONAL, 'Seed for random generator.', 1)
+          ->addOption('locale', 'l', InputOption::VALUE_OPTIONAL, 'Locale for Faker provider.', 'en_EN')
+          ->addOption('persist', 'p', InputOption::VALUE_OPTIONAL, 'Persist loaded entities in database.', true)
+          ->addOption('drop', 'd', InputOption::VALUE_OPTIONAL, 'Drop and create Schema before loading.', false);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -27,9 +27,9 @@ class LoadSetsCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-        ->setName('h4cc_alice_fixtures:load:sets')
-        ->setDescription('Load fixture sets using alice and faker.')
-        ->addArgument('sets', InputArgument::IS_ARRAY, 'List of path to fixture sets to import.');
+          ->setName('h4cc_alice_fixtures:load:sets')
+          ->setDescription('Load fixture sets using alice and faker.')
+          ->addArgument('sets', InputArgument::IS_ARRAY, 'List of path to fixture sets to import.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

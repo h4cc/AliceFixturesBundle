@@ -34,13 +34,13 @@ class SchemaToolTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->omMock = $this->getMockBuilder('\Doctrine\Common\Persistence\ObjectManager')
-                        ->setMethods(array('getMetadataFactory'))
-                        ->getMockForAbstractClass();
+          ->setMethods(array('getMetadataFactory'))
+          ->getMockForAbstractClass();
 
         $this->doctrineSMMock = $this->getMockBuilder('\Doctrine\ORM\Tools\SchemaTool')
-                                ->setMethods(array('dropDatabase', 'createSchema'))
-                                ->disableOriginalConstructor()
-                                ->getMock();
+          ->setMethods(array('dropDatabase', 'createSchema'))
+          ->disableOriginalConstructor()
+          ->getMock();
 
         $this->schema = new SchemaTool($this->omMock, $this->doctrineSMMock);
     }
@@ -55,8 +55,8 @@ class SchemaToolTest extends \PHPUnit_Framework_TestCase
     public function testCreateSchema()
     {
         $metadataMock = $this->getMockBuilder('\Doctrine\Common\Persistence\Mapping\ClassMetadataFactory')
-                        ->setMethods(array('getAllMetadata'))
-                        ->getMockForAbstractClass();
+          ->setMethods(array('getAllMetadata'))
+          ->getMockForAbstractClass();
         $metadataMock->expects($this->once())->method('getAllMetadata')->will($this->returnValue(array(42)));
 
         $this->omMock->expects($this->once())->method('getMetadataFactory')->will($this->returnValue($metadataMock));
