@@ -56,7 +56,7 @@ class LoadSetsCommand extends ContainerAwareCommand
             $output->write("Loading file '$file' ... ");
 
             // The file should return a FixtureSetInterface
-            $set = include($file);
+            $set = $this->loadSet($file);
 
             if (!$set || !($set instanceof FixtureSetInterface)) {
                 throw new \InvalidArgumentException("File '$file' does not return a FixtureSetInterface.");
@@ -66,5 +66,10 @@ class LoadSetsCommand extends ContainerAwareCommand
 
             $output->writeln("loaded " . count($entities) . " entities ... done.");
         }
+    }
+    
+    protected function loadSet($file)
+    {
+        return include $file;
     }
 }
