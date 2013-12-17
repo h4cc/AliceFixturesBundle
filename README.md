@@ -96,7 +96,7 @@ Look at it like a Fixture configuration object for multiple fixture files and op
 
 Example:
 ```php
-$manager = $this->get('h4cc_alice_fixtures.manager');
+$manager = $this->getContainer()->get('h4cc_alice_fixtures.manager');
 
 // Get a FixtureSet with __default__ options.
 $set = $manager->createFixtureSet();
@@ -112,7 +112,7 @@ $set->setDoPersist(true);
 // Enable dropping and recreating current ORM schema.
 $set->setDoDrop(true);
 
-$manager->load($set);
+return $set;
 ```
 
 ### Commands
