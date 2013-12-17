@@ -20,18 +20,18 @@ env:
    - SYMFONY_VERSION=2.4.* DOCTRINE_ORM_VERSION=2.3.*
    - SYMFONY_VERSION=2.4.* DOCTRINE_ORM_VERSION=2.4.*
     
-   - SYMFONY_VERSION=dev-master DOCTRINE_ORM_VERSION=dev-master
+   - SYMFONY_VERSION=dev-master DOCTRINE_ORM_VERSION=2.4.*
 
 matrix:
    allow_failures:
-      - env: SYMFONY_VERSION=dev-master DOCTRINE_ORM_VERSION=dev-master
+      - env: SYMFONY_VERSION=dev-master DOCTRINE_ORM_VERSION=2.4.*
+      - php: hhvm
 
 before_script:
    - composer self-update
    - composer require doctrine/orm:${DOCTRINE_ORM_VERSION} --no-update
    - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update --dev
-   - cat composer.json
-   - composer update
+   - composer update --prefer-dist --no-interaction
 
 script:
    - phpunit -c phpunit.xml.dist --coverage-text
