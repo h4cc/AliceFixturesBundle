@@ -8,6 +8,14 @@ A Symfony2 bundle for flexible usage of Alice and Faker in Symfony2.
 [![Code Coverage](https://scrutinizer-ci.com/g/h4cc/AliceFixturesBundle/badges/coverage.png?s=9bf0abf8ef0ecf41d6187cb8cebca02520fb7150)](https://scrutinizer-ci.com/g/h4cc/AliceFixturesBundle/)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/bcd3cd50-845f-41d3-afbd-93e0a39f03c7/mini.png)](https://insight.sensiolabs.com/projects/bcd3cd50-845f-41d3-afbd-93e0a39f03c7)
 
+
+## Status
+
+This Bundle should be considered "Work-In-Progress". Every version < 1.0 __can and will change__.
+This also means, if you have a fundamental idea for a change, feel free to contribute.
+Contributions in any form are always welcome!
+
+
 ## Introduction
 
 The aim of this bundle is to provide a new way of working with data fixtures detached from the common Doctrine DataFixtures.
