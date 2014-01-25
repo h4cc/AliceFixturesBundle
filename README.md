@@ -186,6 +186,13 @@ return $set;
 Such a file has to return a Object with the FixtureSetInterface Interface.
 
 
+## Demo Application
+
+There is a Demo Application showing some ways to use this bundle: https://github.com/h4cc/AliceDemo
+
+Feel free to add some more demos if you like.
+
+
 ### PHPUnit
 
 If needed, the fixtures can also be loaded in a PHPUnit test.
