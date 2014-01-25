@@ -71,7 +71,7 @@ class LoadFilesCommand extends ContainerAwareCommand
             $set->addFile($file, $type);
             $set->setDoDrop(false); // Never drop while iterating over files.
             $set->setDoPersist(!$input->getOption('no-persist'));
-            $set->setLocale($input->getOption('type'));
+            $set->setLocale($input->getOption('locale'));
             $set->setSeed($input->getOption('seed'));
 
             $entities = $manager->load($set);
