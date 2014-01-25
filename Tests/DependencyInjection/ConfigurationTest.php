@@ -30,10 +30,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         /** @var $options \Symfony\Component\Config\Definition\ScalarNode[] */
         $options = $node->getChildren();
-        $this->assertCount(4, $options);
+        $this->assertCount(6, $options);
         $this->assertEquals('en_EN', $options['locale']->getDefaultValue());
         $this->assertEquals(1, $options['seed']->getDefaultValue());
         $this->assertEquals(true, $options['do_flush']->getDefaultValue());
-        $this->assertEquals('doctrine.orm.entity_manager', $options['object_manager']->getDefaultValue());
+        $this->assertEquals(null, $options['object_manager']->getDefaultValue());
+        $this->assertEquals(null, $options['schema_tool']->getDefaultValue());
+        $this->assertEquals('orm', $options['doctrine']->getDefaultValue());
     }
 }

@@ -30,17 +30,34 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
     /** @var  \PHPUnit_Framework_MockObject_MockObject */
     private $managerMock;
 
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    private $kernelMock;
+
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    private $bundleMock;
+
     public function setUp()
     {
         $this->managerMock = $this->getMockBuilder('\h4cc\AliceFixturesBundle\Fixtures\FixtureManagerInterface')
           ->setMethods(array('load'))
           ->getMockForAbstractClass();
 
+        $this->bundleMock = $this->getMockBuilder('\Symfony\Component\HttpKernel\Bundle\BundleInterface')
+          ->setMethods(array('getPath'))
+          ->getMockForAbstractClass();
+
+        $this->kernelMock = $this->getMockBuilder('\Symfony\Component\HttpKernel\KernelInterface')
+          ->setMethods(array('getBundles'))
+          ->getMockForAbstractClass();
+        $this->kernelMock->expects($this->any())->method('getBundles')->will($this->returnValue(array($this->bundleMock)));
+
+
         $this->application = new Application();
         $this->application->add(new LoadSetsCommand());
 
         $container = new Container();
         $container->set('h4cc_alice_fixtures.manager', $this->managerMock);
+        $container->set('kernel', $this->kernelMock);
 
         $this->command = $this->application->find('h4cc_alice_fixtures:load:sets');
         $this->command->setContainer($container);
@@ -71,6 +88,8 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadErrorNoSets()
     {
+        $this->bundleMock->expects($this->any())->method('getPath')->will($this->returnValue('/bar'));
+
         $tester = new CommandTester($this->command);
 
         $tester->execute(
@@ -78,6 +97,19 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals("No sets to load\n", $tester->getDisplay());
+    }
+
+    public function testLoadWithDefaultLoadedSet()
+    {
+        $this->bundleMock->expects($this->any())->method('getPath')->will($this->returnValue(__DIR__.'/SampleBundle'));
+
+        $tester = new CommandTester($this->command);
+
+        $tester->execute(
+            array('command' => $this->command->getName())
+        );
+
+        $this->assertEquals("Loading file '".__DIR__.'/SampleBundle'."/DataFixtures/Alice/FooSet.php' ... loaded 0 entities ... done.\n", $tester->getDisplay());
     }
 
     /**

@@ -1,7 +1,7 @@
 AliceFixturesBundle
 ===================
 
-A Symfony2 bundle for flexible usage of Alice and Faker in Symfony2.
+A Symfony2 bundle for flexible usage of [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker) in Symfony2.
 
 [![Build Status](https://travis-ci.org/h4cc/AliceFixturesBundle.png?branch=master)](https://travis-ci.org/h4cc/AliceFixturesBundle)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/h4cc/AliceFixturesBundle/badges/quality-score.png?s=2f90c394022338ad406685a575f6ac7ebcde2a2e)](https://scrutinizer-ci.com/g/h4cc/AliceFixturesBundle/)
@@ -21,10 +21,11 @@ Contributions in any form are always welcome!
 The aim of this bundle is to provide a new way of working with data fixtures detached from the common Doctrine DataFixtures.
 Loading of fixtures should be decoupled and easy to integrate where needed.
 This bundle offers loading Fixtures from yaml and php files, also dropping and recreating the ORM Schema.
+Next to Doctrine/ORM, also Doctrine/MongoDB-ODM is supported for recreating schema and persisting fixtures.
 
 If you are searching for Bundle, that provides a way to integrate Alice with Doctrine DataFixtures, have a look at [hautelook/AliceBundle](https://github.com/hautelook/AliceBundle).
 
-This bundle is also capeable of recreating the ORM schema.
+This bundle is also capable of recreating the ORM schema.
 This means _all_ tables managed by Doctrine will be dropped and recreated. A data loss will appear, __you have been warned__.
 
 
@@ -37,7 +38,7 @@ $ php composer.phar require h4cc/alice-fixtures-bundle
 Follow the 'dev-master' branch for latest dev version. But i recommend to use more stable version tags if available.
 
 
-After that, add the Bundle to your Kernel:
+After that, add the Bundle to your Kernel, most likely in the "dev" or "test" environment.
 ```php
 <?php
 // app/AppKernel.php
@@ -46,11 +47,15 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new h4cc\AliceFixturesBundle\h4ccAliceFixturesBundle(),
-        // ...
     );
+
+    if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+        // ...
+        $bundles[] = new h4cc\AliceFixturesBundle\h4ccAliceFixturesBundle();
+    }
 }
 ```
+Keep in mind, that this bundle is capable of removing whole databases, so be carefull when using in production!
 
 
 ## Configuration
@@ -58,17 +63,28 @@ public function registerBundles()
 You can globally configure the Seed für random values, the Locale for Faker and a global flag do_flush,
 if ORM flushes of entities should be omitted or not.
 
+A custom 'object_manager' service id can be defined, as well a custom 'schema_manager' service id.
+
+In case you want to use the default services for either doctrine/orm or doctrine/mongodb-odm, set the "doctrine" value accordingly, which can be either "orm" or "mongodb-odm".
+This setting will just adjust the service-ids for 'object_manager' and 'schema_manager' accordingly, if you have not set them on your own.
+
 ```yaml
 # app/config/config.yml
 
 h4cc_alice_fixtures:
-    object_manager: doctrine.orm.entity_manager # default
     locale: en_US                               # default
     seed: 1                                     # default
     do_flush: true                              # default
+
+    object_manager: null                        # default
+    schema_tool: null                           # default
+    doctrine: orm                               # default
 ```
 
-In case you want to use doctrine_mongodb, change `object_manager` to 'doctrine_mongodb.odm.document_manager'.
+Check out this command for a always up-to-date configuration reference:
+```
+$ php app/console config:dump-reference h4cc_alice_fixtures
+```
 
 
 ## Usage
@@ -100,7 +116,7 @@ $manager->persist($objects, true);
 ### Fixture Sets
 
 A more advanced way of loading fixtures is using "FixtureSets".
-Look at it like a Fixture configuration object for multiple fixture files and options.
+Look at it like a fixture configuration object for multiple fixture files and options.
 
 Example:
 ```php
@@ -125,7 +141,7 @@ return $set;
 
 ### Commands
 
-There are some command for loading fixtures included in this bundle.
+There are some commands for loading fixtures included in this bundle.
 They are also divided in loading plain files or FixtureSets.
 
 ```
@@ -136,12 +152,18 @@ h4cc_alice_fixtures
 
 Example for loading single files using all available options:
 ```bash
-$ php app/console h4cc_alice_fixtures:load:files --type=yaml --seed=42 --local=de_DE --persist=true --drop=true src/Acme/DemoBundle/Fixtures/Users.yml src/Acme/DemoBundle/Fixtures/Articles.yml
+$ php app/console h4cc_alice_fixtures:load:files --type=yaml --seed=42 --local=de_DE --no-persist --drop src/Acme/DemoBundle/Fixtures/Users.yml src/Acme/DemoBundle/Fixtures/Articles.yml
 ```
 
-Example command for loading the FixtureSet:
+Example command for loading the given FixtureSet:
 ```bash
 $ php app/console h4cc_alice_fixtures:load:sets src/Acme/DemoBundle/Fixtures/UsersAndArticlesSet.php
+```
+
+When your FixtureSets are stored at the default path 'DataFixtures/Alice/' and are named like 'ExampleSet.php', they can be found automaticaly. Like the fixtures in Doctrine Datafixtures do.
+To load the default fixture sets, simply execute this command:
+```bash
+$ php app/console h4cc_alice_fixtures:load:sets
 ```
 
 Preconfigured FixtureSet:
@@ -215,3 +237,7 @@ services:
         tags:
             -  { name: h4cc_alice_fixtures.processor }
 ```
+
+## License
+
+This bundle is licensed under MIT.

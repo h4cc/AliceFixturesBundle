@@ -20,33 +20,41 @@ file that was distributed with this source code.
         <parameter key="h4cc_alice_fixtures.manager.class">h4cc\AliceFixturesBundle\Fixtures\FixtureManager</parameter>
 
         <parameter key="h4cc_alice_fixtures.orm.doctrine.class">Nelmio\Alice\ORM\Doctrine</parameter>
-        <parameter key="h4cc_alice_fixtures.orm.schema_tool.class">h4cc\AliceFixturesBundle\ORM\SchemaTool</parameter>
-        <parameter key="h4cc_alice_fixtures.orm.schema_tool.doctrine.class">Doctrine\ORM\Tools\SchemaTool</parameter>
+
+        <parameter key="h4cc_alice_fixtures.orm.schema_tool.doctrine.class">h4cc\AliceFixturesBundle\ORM\DoctrineORMSchemaTool</parameter>
+        <parameter key="h4cc_alice_fixtures.orm.schema_tool.mongodb.class">h4cc\AliceFixturesBundle\ORM\MongoDBODMSchemaTool</parameter>
     </parameters>
 
     <services>
 
+        <!-- Factory for creating Alice loaders. -->
         <service id="h4cc_alice_fixtures.loader.factory" class="%h4cc_alice_fixtures.loader.factory.class%"/>
 
+        <!-- The manager for fixture files and sets. -->
         <service id="h4cc_alice_fixtures.manager" class="%h4cc_alice_fixtures.manager.class%">
-            <argument type="collection"/>
-            <!-- options -->
-            <argument type="string"/>
-            <!-- will be replaced with object_manager service. -->
+            <argument type="collection"/><!-- options from configuration -->
+            <argument type="service" id="h4cc_alice_fixtures.object_manager"/>
             <argument type="service" id="h4cc_alice_fixtures.loader.factory"/>
             <argument type="service" id="h4cc_alice_fixtures.orm.schema_tool"/>
             <argument type="service" id="logger" on-invalid="null"/>
         </service>
 
-        <service id="h4cc_alice_fixtures.orm.schema_tool" class="%h4cc_alice_fixtures.orm.schema_tool.class%">
-            <argument type="service" id="doctrine.orm.entity_manager"/>
-            <argument type="service" id="h4cc_alice_fixtures.orm.schema_tool.doctrine"/>
+        <!-- This service is just a alias for the concrete schema_tool implementation and can be changed via configuration. -->
+        <service id="h4cc_alice_fixtures.orm.schema_tool" alias="h4cc_alice_fixtures.orm.schema_tool.doctrine" />
+
+        <!-- Doctrine ORM Schema tool. -->
+        <service id="h4cc_alice_fixtures.orm.schema_tool.doctrine" class="%h4cc_alice_fixtures.orm.schema_tool.doctrine.class%">
+            <argument type="service" id="h4cc_alice_fixtures.object_manager"/>
         </service>
 
-        <service public="false" id="h4cc_alice_fixtures.orm.schema_tool.doctrine"
-                 class="%h4cc_alice_fixtures.orm.schema_tool.doctrine.class%">
-            <argument type="service" id="doctrine.orm.entity_manager"/>
+        <!-- Doctrine MongoDB ODM Schema tool. -->
+        <service id="h4cc_alice_fixtures.orm.schema_tool.mongodb" class="%h4cc_alice_fixtures.orm.schema_tool.mongodb.class%">
+            <argument type="service" id="h4cc_alice_fixtures.object_manager"/>
         </service>
+
+
+        <!-- Alias for the ObjectManager. Can be changed via configuration. -->
+        <service id="h4cc_alice_fixtures.object_manager" alias="doctrine.orm.entity_manager" />
     </services>
 
 </container>

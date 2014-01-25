@@ -37,6 +37,10 @@ class LoadSetsCommand extends ContainerAwareCommand
         $sets = $input->getArgument('sets');
 
         if (!$sets) {
+            $sets = $this->findSetsByDefaultNaming();
+        }
+
+        if (!$sets) {
             $output->writeln("No sets to load");
         }
 
@@ -71,5 +75,32 @@ class LoadSetsCommand extends ContainerAwareCommand
     protected function loadSet($file)
     {
         return include $file;
+    }
+
+    /**
+     * Returns a list of all *Bundle/DataFixtures/Alice/*Set.php files.
+     *
+     * @return string[]
+     */
+    protected function findSetsByDefaultNaming() {
+        // Get all existing paths from bundles.
+        $paths = array();
+        /** @var $bundle \Symfony\Component\HttpKernel\Bundle\BundleInterface */
+        foreach ($this->getContainer()->get('kernel')->getBundles() as $bundle) {
+            if(is_dir($path = $bundle->getPath().'/DataFixtures/Alice')) {
+                $paths[] = $path;
+            }
+        }
+
+        if(!$paths) {
+            return array();
+        }
+
+        // Find all Sets in these paths.
+        $finder = new Finder();
+        $finder->files()->name('*Set.php')->in($paths);
+
+        // Return paths to sets.
+        return array_keys(iterator_to_array($finder));
     }
 }

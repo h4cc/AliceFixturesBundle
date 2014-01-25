@@ -35,11 +35,36 @@ class h4ccAliceFixturesExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->getDefinition('h4cc_alice_fixtures.manager')
-          ->replaceArgument(1, new Reference($config['object_manager']));
-        unset($config['object_manager']);
+        // Set the default service ids, if they have not been defined in config.
+        switch($config['doctrine']) {
+            case 'orm':
+                if(!$config['object_manager']) {
+                    $config['object_manager'] = 'doctrine.orm.entity_manager';
+                }
+                if(!$config['schema_tool']) {
+                    $config['schema_tool'] = 'h4cc_alice_fixtures.orm.schema_tool.doctrine';
+                }
+                break;
+            case 'mongodb-odm':
+                if(!$config['object_manager']) {
+                    $config['object_manager'] = 'doctrine_mongodb.odm.document_manager';
+                }
+                if(!$config['schema_tool']) {
+                    $config['schema_tool'] = 'h4cc_alice_fixtures.orm.schema_tool.mongodb';
+                }
+                break;
+            default:
+                throw new \InvalidArgumentException("Invalid value for 'doctrine'");
+        }
 
-        $container->getDefinition('h4cc_alice_fixtures.manager')
-          ->replaceArgument(0, $config);
+        $container->setAlias('h4cc_alice_fixtures.object_manager', $config['object_manager']);
+        $container->setAlias('h4cc_alice_fixtures.orm.schema_tool', $config['schema_tool']);
+
+        $managerConfig = array(
+            'locale' => $config['locale'],
+            'seed' => $config['seed'],
+            'do_flush' => $config['do_flush'],
+        );
+        $container->getDefinition('h4cc_alice_fixtures.manager')->replaceArgument(0, $managerConfig);
     }
 }

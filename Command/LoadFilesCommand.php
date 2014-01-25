@@ -33,8 +33,8 @@ class LoadFilesCommand extends ContainerAwareCommand
           ->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'Type of loader. Can be "yaml" or "php".', 'yaml')
           ->addOption('seed', null, InputOption::VALUE_OPTIONAL, 'Seed for random generator.', 1)
           ->addOption('locale', 'l', InputOption::VALUE_OPTIONAL, 'Locale for Faker provider.', 'en_EN')
-          ->addOption('persist', 'p', InputOption::VALUE_OPTIONAL, 'Persist loaded entities in database.', true)
-          ->addOption('drop', 'd', InputOption::VALUE_OPTIONAL, 'Drop and create Schema before loading.', false);
+          ->addOption('no-persist', 'np', InputOption::VALUE_NONE, 'Persist loaded entities in database.')
+          ->addOption('drop', 'd', InputOption::VALUE_NONE, 'Drop and create Schema before loading.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -70,8 +70,8 @@ class LoadFilesCommand extends ContainerAwareCommand
             $set = $manager->createFixtureSet();
             $set->addFile($file, $type);
             $set->setDoDrop(false); // Never drop while iterating over files.
-            $set->setDoPersist($input->getOption('persist'));
-            $set->setLocale($input->getOption('locale'));
+            $set->setDoPersist(!$input->getOption('no-persist'));
+            $set->setLocale($input->getOption('type'));
             $set->setSeed($input->getOption('seed'));
 
             $entities = $manager->load($set);

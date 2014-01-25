@@ -11,17 +11,15 @@
 
 namespace h4cc\AliceFixturesBundle\ORM;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool as DoctrineSchemaTool;
-use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * Class SchemaTool
- *
  * Helper tool for creating and dropping ORM Schemas.
  *
  * @author Julius Beckmann <github@h4cc.de>
  */
-class SchemaTool implements SchemaToolInterface
+class DoctrineORMSchemaTool implements SchemaToolInterface
 {
     /**
      * @var DoctrineSchemaTool
@@ -29,18 +27,17 @@ class SchemaTool implements SchemaToolInterface
     protected $doctrineSchemaTool;
 
     /**
-     * @var ObjectManager
+     * @var EntityManager
      */
-    protected $objectManager;
+    protected $entityManager;
 
     /**
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param DoctrineSchemaTool $doctrineSchemaTool
+     * @param EntityManager $entitiyManager
      */
-    public function __construct(ObjectManager $objectManager, DoctrineSchemaTool $doctrineSchemaTool)
+    public function __construct(EntityManager $entitiyManager)
     {
-        $this->objectManager = $objectManager;
-        $this->doctrineSchemaTool = $doctrineSchemaTool;
+        $this->entityManager = $entitiyManager;
+        $this->doctrineSchemaTool = new DoctrineSchemaTool($entitiyManager);
     }
 
     /**
@@ -56,7 +53,7 @@ class SchemaTool implements SchemaToolInterface
      */
     public function createSchema()
     {
-        $metadata = $this->objectManager->getMetadataFactory()->getAllMetadata();
+        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
 
         $this->doctrineSchemaTool->createSchema($metadata);
     }
