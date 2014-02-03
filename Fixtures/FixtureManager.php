@@ -146,28 +146,57 @@ class FixtureManager implements FixtureManagerInterface
             }
         }
 
-        // Load files
+        // Objects are the loaded entities without "local".
+        $objects = array();
+        // References contain, _all_ objects loaded.
         $references = array();
+
+        // Load each file
         foreach ($set->getFiles() as $file) {
             // Use seed before each loading, so results will be more predictable.
             $this->initSeedFromSet($set);
 
             $loader = $loaders[$file['type']];
+
             $loader->setReferences($references);
-            $loader->load($file['path']);
+            $newObjects = $loader->load($file['path']);
             $references = $loader->getReferences();
-            $this->logDebug("Loaded file '" . $file['path'] . "'.");
+
+            $this->logDebug("Loaded ".count($newObjects)." file '" . $file['path'] . "'.");
+            $objects = array_merge($objects, $newObjects);
         }
 
+        // Need to remove the "local" objects from references table.
+        // This can be skipped, when this change has been released:
+        // https://github.com/nelmio/alice/commit/d3bdb0d0e67e0b00d6e0b4df6b99a89bc7db882a
+        $objects = $this->removeLocalReferences($references, $objects);
+
         if ($set->getDoPersist()) {
-            $this->persist($references, $set->getDoDrop());
-            $this->logDebug("Persisted " . count($references) . " loaded objects.");
+            $this->persist($objects, $set->getDoDrop());
+            $this->logDebug("Persisted " . count($objects) . " loaded objects.");
         }
 
         // Detach entities
-        $this->orm->detach($references);
+        $this->orm->detach($objects);
 
-        return $references;
+        return $objects;
+    }
+
+    /**
+     * Helper for a "intersect" of loaded objects.
+     *
+     * @param $base
+     * @param $extra
+     * @return mixed
+     */
+    private function removeLocalReferences($base, $extra) {
+        $intersect = $base;
+        foreach ($base as $key => $value){
+            if (!in_array($value, $extra)){
+                unset($intersect[$key]);
+            }
+        }
+        return $intersect;
     }
 
     /**
