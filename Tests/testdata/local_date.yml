@@ -1,0 +1,8 @@
+
+\DateTime (local):
+    date:
+        __construct: ["2000-01-01 00:00:00"]
+
+h4cc\AliceFixturesBundle\Tests\testdata\Group:
+    group:
+        creationDate: @date

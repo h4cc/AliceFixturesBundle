@@ -182,4 +182,21 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->manager->loadFiles(array(__DIR__ . '/../testdata/part_1.yml'));
     }
+
+    /**
+     * Issue 11 https://github.com/h4cc/AliceFixturesBundle/issues/11
+     * Load objects, but do not return the "local" ones, because these can not be persisted by doctrine.
+     */
+    public function testLocalEntities()
+    {
+        // We need a real YAML Loader for this.
+        $this->factoryMock->expects($this->any())->method('getLoader')
+          ->with('yaml', 'en_EN')->will($this->returnValue(new Yaml()));
+
+        $objects = $this->manager->loadFiles(array(__DIR__ . '/../testdata/local_date.yml'));
+
+        // The result should only contain the "group", not the "date".
+        $this->assertEquals(array('group'), array_keys($objects));
+        $this->assertEquals("2000-01-01 00:00:00", $objects['group']->getCreationDate()->format('Y-m-d H:i:s'));
+    }
 }
