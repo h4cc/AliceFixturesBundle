@@ -61,7 +61,7 @@ Keep in mind, that this bundle is capable of removing whole databases, so be car
 
 ## Configuration
 
-You can globally configure the Seed für random values, the Locale for Faker and a global flag do_flush,
+You can globally configure the Seed for random values, the Locale for Faker and a global flag do_flush,
 if ORM flushes of entities should be omitted or not.
 
 A custom 'object_manager' service id can be defined, as well a custom 'schema_manager' service id.
