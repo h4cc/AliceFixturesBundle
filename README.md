@@ -70,7 +70,7 @@ In case you want to use the default services for either doctrine/orm or doctrine
 This setting will just adjust the service-ids for 'object_manager' and 'schema_manager' accordingly, if you have not set them on your own.
 
 ```yaml
-# app/config/config.yml
+# app/config/config_dev.yml
 
 h4cc_alice_fixtures:
     locale: en_US                               # default
