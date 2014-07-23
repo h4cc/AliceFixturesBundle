@@ -21,22 +21,24 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
 {
-    public function testPublicServiceIds()
+    public function testGetConfigWithDefaultValues()
     {
         $container = $this->getContainerWithLoadedExtension();
 
-        $publicServiceIds = array(
-            'h4cc_alice_fixtures.loader.factory',
-            'h4cc_alice_fixtures.manager',
-            'h4cc_alice_fixtures.orm.schema_tool',
-            'h4cc_alice_fixtures.orm.schema_tool.doctrine',
-            'h4cc_alice_fixtures.orm.schema_tool.mongodb',
-            'h4cc_alice_fixtures.object_manager',
+        $this->assertEquals(
+            array('locale' => 'en_EN', 'seed' => 1, 'do_flush' => true),
+            $container->getDefinition($container->getAlias('h4cc_alice_fixtures.manager'))->getArgument(0)
         );
+    }
 
-        foreach ($publicServiceIds as $id) {
-            $this->assertTrue($container->has($id));
-        }
+
+    /**
+     * @dataProvider getPublicServiceIdProvider
+     */
+    public function testPublicServiceIds($publicServiceId)
+    {
+        $container = $this->getContainerWithLoadedExtension();
+        $this->assertTrue($container->has($publicServiceId));
     }
 
     public function testLoadDefault()
@@ -49,7 +51,10 @@ class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->getContainerWithLoadedExtension($config);
 
-        $this->assertEquals($config, $container->getDefinition('h4cc_alice_fixtures.manager')->getArgument(0));
+        $this->assertEquals(
+            $config,
+            $container->getDefinition($container->getAlias('h4cc_alice_fixtures.manager'))->getArgument(0)
+        );
     }
 
     public function testLoadWithDefaultORM()
@@ -100,6 +105,71 @@ class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('my_schema_tool', $container->getAlias('h4cc_alice_fixtures.orm.schema_tool'));
     }
 
+    public function testLoadManyManagersWithDefaultValuesAndWithoutDefaultManagerSet()
+    {
+        $container = $this->getContainerWithLoadedExtension(array(
+            'managers' => array(
+                'manager1' => array(
+                    'doctrine' => 'orm',
+                ),
+
+                'manager2' => array(
+                    'doctrine' => 'mongodb-odm',
+                )
+            )
+        ));
+
+        // Check that the custom aliases are set.
+        $this->assertEquals(
+            sprintf(h4ccAliceFixturesExtension::FIXTURE_MANAGER_NAME_MODEL, 'manager1'),
+            $container->getAlias('h4cc_alice_fixtures.manager')
+        );
+
+        $this->assertEquals(
+            'h4cc_alice_fixtures.orm.schema_tool.doctrine',
+            $container->getAlias('h4cc_alice_fixtures.orm.schema_tool')
+        );
+
+        //set default alias object manager
+        $this->assertEquals(
+            'doctrine.orm.entity_manager',
+            $container->getAlias('h4cc_alice_fixtures.object_manager')
+        );
+    }
+
+    public function testLoadManyManagersWithDefaultValuesAndWithDefaultManagerSet()
+    {
+        $container = $this->getContainerWithLoadedExtension(array(
+            'managers' => array(
+                'manager1' => array(
+                    'doctrine' => 'orm',
+                ),
+
+                'manager2' => array(
+                    'doctrine' => 'mongodb-odm',
+                )
+            ),
+            'default_manager' => 'manager2'
+        ));
+
+        // Check that the custom aliases are set.
+        $this->assertEquals(
+            sprintf(h4ccAliceFixturesExtension::FIXTURE_MANAGER_NAME_MODEL, 'manager2'),
+            $container->getAlias('h4cc_alice_fixtures.manager')
+        );
+
+        $this->assertEquals(
+            'h4cc_alice_fixtures.orm.schema_tool.mongodb',
+            $container->getAlias('h4cc_alice_fixtures.orm.schema_tool')
+        );
+
+        //set default alias object manager
+        $this->assertEquals(
+            'doctrine_mongodb.odm.document_manager',
+            $container->getAlias('h4cc_alice_fixtures.object_manager')
+        );
+    }
+
     protected function getContainerWithLoadedExtension(array $config = array())
     {
         $container = new ContainerBuilder();
@@ -108,5 +178,16 @@ class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
         $extension->load(array($config), $container);
 
         return $container;
+    }
+
+    public function getPublicServiceIdProvider()
+    {
+        return array(
+            array('h4cc_alice_fixtures.loader.factory'),
+            array('h4cc_alice_fixtures.manager'),
+            array('h4cc_alice_fixtures.orm.schema_tool'),
+            array('h4cc_alice_fixtures.orm.schema_tool.doctrine'),
+            array('h4cc_alice_fixtures.object_manager'),
+        );
     }
 }

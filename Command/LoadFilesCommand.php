@@ -34,7 +34,8 @@ class LoadFilesCommand extends ContainerAwareCommand
           ->addOption('seed', null, InputOption::VALUE_OPTIONAL, 'Seed for random generator.', 1)
           ->addOption('locale', 'l', InputOption::VALUE_OPTIONAL, 'Locale for Faker provider.', 'en_EN')
           ->addOption('no-persist', 'np', InputOption::VALUE_NONE, 'Persist loaded entities in database.')
-          ->addOption('drop', 'd', InputOption::VALUE_NONE, 'Drop and create Schema before loading.');
+          ->addOption('drop', 'd', InputOption::VALUE_NONE, 'Drop and create Schema before loading.')
+          ->addOption('manager', 'm', InputOption::VALUE_OPTIONAL, 'The manager name to used.', 'default');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -53,13 +54,21 @@ class LoadFilesCommand extends ContainerAwareCommand
             }
         }
 
+        $managerServiceId = 'h4cc_alice_fixtures.manager';
+        $schemaToolServiceId = 'h4cc_alice_fixtures.orm.schema_tool';
+
+        if ('default' !== $input->getOption('manager')) {
+            $managerServiceId    = sprintf('h4cc_alice_fixtures.%s_manager', $input->getOption('manager'));
+            $schemaToolServiceId = sprintf('h4cc_alice_fixtures.orm.%s_schema_tool', $input->getOption('manager'));
+        }
+
         /**
          * @var $manager \h4cc\AliceFixturesBundle\Fixtures\FixtureManager
          */
-        $manager = $this->getContainer()->get('h4cc_alice_fixtures.manager');
+        $manager = $this->getContainer()->get($managerServiceId);
 
         if ($input->getOption('drop')) {
-            $schemaTool = $this->getContainer()->get('h4cc_alice_fixtures.orm.schema_tool');
+            $schemaTool = $this->getContainer()->get($schemaToolServiceId);
             $schemaTool->dropSchema();
             $schemaTool->createSchema();
         }
