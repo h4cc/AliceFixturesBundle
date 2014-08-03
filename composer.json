@@ -25,9 +25,8 @@
         "doctrine/mongodb-odm-bundle": "3.0.*@dev"
     },
     "autoload": {
-        "psr-0": {
-            "h4cc\\AliceFixturesBundle": ""
+        "psr-4": {
+            "h4cc\\AliceFixturesBundle\\": ""
         }
-    },
-    "target-dir": "h4cc/AliceFixturesBundle"
+    }
 }
