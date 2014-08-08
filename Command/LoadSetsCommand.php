@@ -14,6 +14,7 @@ namespace h4cc\AliceFixturesBundle\Command;
 use h4cc\AliceFixturesBundle\Fixtures\FixtureSetInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -30,7 +31,8 @@ class LoadSetsCommand extends ContainerAwareCommand
         $this
           ->setName('h4cc_alice_fixtures:load:sets')
           ->setDescription('Load fixture sets using alice and faker.')
-          ->addArgument('sets', InputArgument::IS_ARRAY, 'List of path to fixture sets to import.');
+          ->addArgument('sets', InputArgument::IS_ARRAY, 'List of path to fixture sets to import.')
+          ->addOption('manager', 'm', InputOption::VALUE_OPTIONAL, 'The manager name to used.', 'default');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -52,10 +54,16 @@ class LoadSetsCommand extends ContainerAwareCommand
             }
         }
 
+        $managerServiceId = 'h4cc_alice_fixtures.manager';
+
+        if ('default' !== $input->getOption('manager')) {
+            $managerServiceId = sprintf('h4cc_alice_fixtures.%s_manager', $input->getOption('manager'));
+        }
+
         /**
          * @var $manager \h4cc\AliceFixturesBundle\Fixtures\FixtureManager
          */
-        $manager = $this->getContainer()->get('h4cc_alice_fixtures.manager');
+        $manager = $this->getContainer()->get($managerServiceId);
 
         foreach ($sets as $file) {
             $output->write("Loading file '$file' ... ");
