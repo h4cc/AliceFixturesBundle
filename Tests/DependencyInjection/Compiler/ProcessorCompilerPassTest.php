@@ -31,21 +31,18 @@ class ProcessorCompilerPassTest extends \PHPUnit_Framework_TestCase
         $this->compilerPass = new ProcessorCompilerPass();
 
         $this->containerMock = $this->getMockBuilder('\Symfony\Component\DependencyInjection\ContainerBuilder')
-          ->setMethods(array('hasDefinition', 'getDefinition', 'findTaggedServiceIds'))
+          ->setMethods(array('findDefinition', 'findTaggedServiceIds'))
           ->disableOriginalConstructor()
           ->getMock();
     }
 
     public function testProcess()
     {
-        $this->containerMock->expects($this->once())->method('hasDefinition')
-          ->with('h4cc_alice_fixtures.manager')->will($this->returnValue(true));
-
         $definitionMock = $this->getMockBuilder('\Symfony\Component\DependencyInjection\Definition')
           ->setMethods(array('addMethodCall'))
           ->disableOriginalConstructor()
           ->getMock();
-        $this->containerMock->expects($this->once())->method('getDefinition')
+        $this->containerMock->expects($this->once())->method('findDefinition')
           ->with('h4cc_alice_fixtures.manager')->will($this->returnValue($definitionMock));
 
         $taggedServices = array(
@@ -58,14 +55,6 @@ class ProcessorCompilerPassTest extends \PHPUnit_Framework_TestCase
 
         $definitionMock->expects($this->exactly(2))->method('addMethodCall');
 
-        $this->compilerPass->process($this->containerMock);
-    }
-
-    public function testProcessNoManager()
-    {
-        $this->containerMock->expects($this->once())->method('hasDefinition')->with(
-            'h4cc_alice_fixtures.manager'
-        )->will($this->returnValue(false));
         $this->compilerPass->process($this->containerMock);
     }
 }
