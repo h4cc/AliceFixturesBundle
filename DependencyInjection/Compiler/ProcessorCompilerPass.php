@@ -24,11 +24,7 @@ class ProcessorCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (false === $container->hasDefinition('h4cc_alice_fixtures.manager')) {
-            return;
-        }
-
-        $definition = $container->getDefinition('h4cc_alice_fixtures.manager');
+        $definition = $container->findDefinition('h4cc_alice_fixtures.manager');
 
         foreach (array_keys($container->findTaggedServiceIds('h4cc_alice_fixtures.processor')) as $id) {
             $definition->addMethodCall('addProcessor', array(new Reference($id)));
