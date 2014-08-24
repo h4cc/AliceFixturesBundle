@@ -11,14 +11,13 @@
 
 namespace h4cc\AliceFixturesBundle\Fixtures;
 
+use h4cc\AliceFixturesBundle\ORM\ORMInterface;
 use Nelmio\Alice\Fixtures;
 use Nelmio\Alice\Loader\Base;
 use Nelmio\Alice\LoaderInterface;
-use Nelmio\Alice\ORMInterface;
 use Nelmio\Alice\ProcessorInterface;
 use Psr\Log\LoggerInterface;
-use Doctrine\Common\Persistence\ObjectManager;
-use h4cc\AliceFixturesBundle\ORM\SchemaTool;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use h4cc\AliceFixturesBundle\ORM\SchemaToolInterface;
 use h4cc\AliceFixturesBundle\Loader\FactoryInterface;
 use h4cc\AliceFixturesBundle\ORM\Doctrine;
@@ -64,14 +63,14 @@ class FixtureManager implements FixtureManagerInterface
 
     /**
      * @param array $options
-     * @param ObjectManager $objectManager
+     * @param ManagerRegistry $managerRegistry
      * @param \h4cc\AliceFixturesBundle\Loader\FactoryInterface $loaderFactory
      * @param \h4cc\AliceFixturesBundle\ORM\SchemaToolInterface $schemaTool
      * @param LoggerInterface $logger
      */
     public function __construct(
         array $options,
-        ObjectManager $objectManager,
+        ManagerRegistry $managerRegistry,
         FactoryInterface $loaderFactory,
         SchemaToolInterface $schemaTool,
         LoggerInterface $logger = null
@@ -81,7 +80,7 @@ class FixtureManager implements FixtureManagerInterface
             $this->getDefaultOptions(),
             $options
         );
-        $this->orm = new Doctrine($objectManager, $this->options['do_flush']);
+        $this->orm = new Doctrine($managerRegistry, $this->options['do_flush']);
         $this->loaderFactory = $loaderFactory;
         $this->schemaTool = $schemaTool;
         $this->logger = $logger;
@@ -132,19 +131,7 @@ class FixtureManager implements FixtureManagerInterface
      */
     public function load(FixtureSet $set)
     {
-        /** @var \Nelmio\Alice\LoaderInterface[] $loaders */
-        $loaders = array();
-
-        // Create needed loaders
-        foreach ($set->getFiles() as $file) {
-            $type = $file['type'];
-            if (!isset($loaders[$type])) {
-                $loader = $this->loaderFactory->getLoader($type, $set->getLocale());
-                $this->configureLoader($loader);
-                $loaders[$type] = $loader;
-                $this->logDebug("Created loader for type '$type'.");
-            }
-        }
+        $loaders = $this->createNeededLoaders($set);
 
         // Objects are the loaded entities without "local".
         $objects = array();
@@ -177,9 +164,30 @@ class FixtureManager implements FixtureManagerInterface
         }
 
         // Detach entities
-        $this->orm->detach($objects);
+        $this->getORM()->detach($objects);
 
         return $objects;
+    }
+
+    /**
+     * @param FixtureSet $set
+     * @return \Nelmio\Alice\LoaderInterface[]
+     */
+    private function createNeededLoaders(FixtureSet $set)
+    {
+        $loaders = array();
+
+        foreach ($set->getFiles() as $file) {
+            $type = $file['type'];
+            if (!isset($loaders[$type])) {
+                $loader = $this->loaderFactory->getLoader($type, $set->getLocale());
+                $this->configureLoader($loader);
+                $loaders[$type] = $loader;
+                $this->logDebug("Created loader for type '$type'.");
+            }
+        }
+
+        return $loaders;
     }
 
     /**
@@ -203,7 +211,7 @@ class FixtureManager implements FixtureManagerInterface
      * Returns the ORM.
      *
      * @throws \InvalidArgumentException
-     * @return Doctrine
+     * @return ORMInterface
      */
     public function getORM()
     {
@@ -233,7 +241,7 @@ class FixtureManager implements FixtureManagerInterface
      * Returns the  ORM Schema tool.
      *
      * @throws \InvalidArgumentException
-     * @return SchemaTool
+     * @return SchemaToolInterface
      */
     public function getSchemaTool()
     {

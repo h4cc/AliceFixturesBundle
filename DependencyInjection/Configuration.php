@@ -22,6 +22,9 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
  */
 class Configuration implements ConfigurationInterface
 {
+    const DOCTRINE_ORM = 'orm';
+    const DOCTRINE_MONGODB_ODM = 'mongodb-odm';
+
     /**
      * {@inheritDoc}
      */
@@ -88,17 +91,13 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(true)
                     ->info('Set to false if no ORM flushes should be made.')
                 ->end()
-                ->scalarNode('object_manager')
-                    ->defaultValue(null)
-                    ->info('Define service id for the used object manager.')
-                ->end()
                 ->scalarNode('schema_tool')
                     ->defaultValue(null)
                     ->info('Define service id for the used Schema tool.')
                 ->end()
                 ->enumNode('doctrine')
-                    ->defaultValue('orm')
-                    ->values(array('orm', 'mongodb-odm'))
+                    ->defaultValue(static::DOCTRINE_ORM)
+                    ->values(array(static::DOCTRINE_ORM, static::DOCTRINE_MONGODB_ODM))
                     ->info('This option enables selecting between Doctrine ORM and MongoDB ODM and will set the default object_manager and schema_tool services.')
                 ->end()
             ->end()

@@ -11,7 +11,8 @@
 
 namespace h4cc\AliceFixturesBundle\ORM;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Tools\SchemaTool as DoctrineSchemaTool;
 
 /**
@@ -22,22 +23,16 @@ use Doctrine\ORM\Tools\SchemaTool as DoctrineSchemaTool;
 class DoctrineORMSchemaTool implements SchemaToolInterface
 {
     /**
-     * @var DoctrineSchemaTool
+     * @var ManagerRegistry
      */
-    protected $doctrineSchemaTool;
+    protected $managerRegistry;
 
     /**
-     * @var EntityManager
+     * @param ManagerRegistry $managerRegistry
      */
-    protected $entityManager;
-
-    /**
-     * @param EntityManager $entitiyManager
-     */
-    public function __construct(EntityManager $entitiyManager)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->entityManager = $entitiyManager;
-        $this->doctrineSchemaTool = new DoctrineSchemaTool($entitiyManager);
+        $this->managerRegistry = $managerRegistry;
     }
 
     /**
@@ -45,7 +40,10 @@ class DoctrineORMSchemaTool implements SchemaToolInterface
      */
     public function dropSchema()
     {
-        $this->doctrineSchemaTool->dropDatabase();
+        $this->foreachObjectManagers(function(ObjectManager $objectManager) {
+            $schemaTool = new DoctrineSchemaTool($objectManager);
+            $schemaTool->dropDatabase();
+        });
     }
 
     /**
@@ -53,8 +51,16 @@ class DoctrineORMSchemaTool implements SchemaToolInterface
      */
     public function createSchema()
     {
-        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
+        $this->foreachObjectManagers(function(ObjectManager $objectManager) {
+            $metadata = $objectManager->getMetadataFactory()->getAllMetadata();
 
-        $this->doctrineSchemaTool->createSchema($metadata);
+            $schemaTool = new DoctrineSchemaTool($objectManager);
+            $schemaTool->createSchema($metadata);
+        });
+    }
+
+    private function foreachObjectManagers($callback)
+    {
+        array_map($callback, $this->managerRegistry->getManagers());
     }
 }

@@ -23,8 +23,10 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \h4cc\AliceFixturesBundle\Fixtures\FixtureManager */
     protected $manager;
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $objectManagerMock;
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    protected $managerRegistryMock;
     /** @var  \PHPUnit_Framework_MockObject_MockObject */
     protected $schemaToolMock;
     /** @var  \PHPUnit_Framework_MockObject_MockObject */
@@ -41,6 +43,11 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
         $this->objectManagerMock = $this->getMockBuilder('\Doctrine\ORM\EntityManager')
           ->disableOriginalConstructor()
           ->getMock();
+
+        $this->managerRegistryMock = $this->getMockBuilder('\Doctrine\Common\Persistence\ManagerRegistry')
+          ->setMethods(array('getManagerForClass'))
+          ->disableOriginalConstructor()
+          ->getMockForAbstractClass();
 
         $this->schemaToolMock = $this->getMockBuilder('\h4cc\AliceFixturesBundle\ORM\SchemaToolInterface')
           ->disableOriginalConstructor()
@@ -60,7 +67,7 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->manager = new FixtureManager(
             array(),
-            $this->objectManagerMock,
+            $this->managerRegistryMock,
             $this->factoryMock,
             $this->schemaToolMock,
             $this->loggerMock
@@ -126,6 +133,9 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
         $this->factoryMock->expects($this->any())->method('getLoader')
           ->with('yaml', 'en_EN')->will($this->returnValue(new Yaml()));
 
+        $this->managerRegistryMock->expects($this->any())->method('getManagerForClass')
+          ->will($this->returnValue($this->objectManagerMock));
+
         $entities = $this->manager->loadFiles(array(__DIR__ . '/../testdata/part_1.yml'));
 
         $this->assertCount(11, $entities);
@@ -136,6 +146,9 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
     {
         $this->factoryMock->expects($this->any())->method('getLoader')
           ->with('yaml', 'en_EN')->will($this->returnValue(new Yaml()));
+
+        $this->managerRegistryMock->expects($this->any())->method('getManagerForClass')
+          ->will($this->returnValue($this->objectManagerMock));
 
         $this->processorMock->expects($this->exactly(11))->method('preProcess');
         $this->processorMock->expects($this->exactly(11))->method('postProcess');
@@ -159,6 +172,9 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testRemove()
     {
+        $this->managerRegistryMock->expects($this->any())->method('getManagerForClass')
+          ->will($this->returnValue($this->objectManagerMock));
+
         $this->objectManagerMock->expects($this->once())->method('merge')->with('42')->will($this->returnValue('1337'));
         $this->objectManagerMock->expects($this->once())->method('remove')->with('1337');
 
@@ -192,6 +208,9 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
         // We need a real YAML Loader for this.
         $this->factoryMock->expects($this->any())->method('getLoader')
           ->with('yaml', 'en_EN')->will($this->returnValue(new Yaml()));
+
+        $this->managerRegistryMock->expects($this->any())->method('getManagerForClass')
+          ->will($this->returnValue($this->objectManagerMock));
 
         $objects = $this->manager->loadFiles(array(__DIR__ . '/../testdata/local_date.yml'));
 

@@ -11,8 +11,8 @@
 
 namespace h4cc\AliceFixturesBundle\ORM;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Nelmio\Alice\ORM\Doctrine as BaseDoctrine;
+
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * Class Doctrine
@@ -21,68 +21,120 @@ use Nelmio\Alice\ORM\Doctrine as BaseDoctrine;
  *
  * @author Julius Beckmann <github@h4cc.de>
  */
-class Doctrine extends BaseDoctrine
+class Doctrine implements ORMInterface
 {
     protected $flush;
+    protected $managerRegistry;
 
-    /**
-     * Wrapper to fetch the doFlush flag.
-     *
-     * @param ObjectManager $om
-     * @param bool $doFlush
-     */
-    public function __construct(ObjectManager $om, $doFlush = true)
+    // We need to collect all the used managers for flushing them.
+    protected $managersToFlush;
+
+    public function __construct(ManagerRegistry $managerRegistry, $doFlush = true)
     {
         $this->flush = $doFlush;
-        parent::__construct($om, $doFlush);
+        $this->managerRegistry = $managerRegistry;
+
+        $this->managersToFlush = new \SplObjectStorage();
     }
 
     /**
-     * Removes entities.
-     *
-     * @param array $objects
+     * {@inheritDoc}
+     */
+    public function persist(array $objects)
+    {
+        foreach ($objects as $object) {
+            $manager = $this->getManagerFor($object);
+            $this->managersToFlush->attach($manager);
+
+            $manager->persist($object);
+        }
+
+        $this->flush();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function find($class, $id)
+    {
+        $entity = $this->getManagerFor($class)->find($class, $id);
+
+        if (!$entity) {
+            throw new \UnexpectedValueException('Entity with Id ' . $id . ' and Class ' . $class . ' not found');
+        }
+
+        return $entity;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function remove(array $objects)
     {
         $objects = $this->merge($objects);
 
         foreach ($objects as $object) {
-            $this->om->remove($object);
+            $manager = $this->getManagerFor($object);
+            $this->managersToFlush->attach($manager);
+
+            $manager->remove($object);
         }
 
-        if ($this->flush) {
-            $this->om->flush();
-        }
+        $this->flush();
     }
 
     /**
-     * Merges entities.
-     *
-     * @param array $objects
-     *
-     * @return array objects
+     * {@inheritDoc}
      */
     public function merge(array $objects)
     {
-        $om = $this->om;
-        return array_map(
-            function ($obj) use ($om) {
-                return $om->merge($obj);
-            },
-            $objects
-        );
+        $mergedObjects = array();
+
+        foreach($objects as $object) {
+            $mergedObjects[] = $this->getManagerFor($object)->merge($object);
+        }
+
+        return $mergedObjects;
     }
 
     /**
-     * Detaches entities.
-     *
-     * @param array $objects
+     * {@inheritDoc}
      */
     public function detach(array $objects)
     {
         foreach ($objects as $object) {
-            $this->om->detach($object);
+            $this->getManagerFor($object)->detach($object);
         }
+    }
+
+    private function getManagerFor($object)
+    {
+        if(is_object($object)) {
+            $class = get_class($object);
+        }else{
+            $class = (string)$object;
+        }
+
+        $manager = $this->managerRegistry->getManagerForClass($class);
+
+        if(!$manager) {
+            throw new \RuntimeException('No ObjectManager for class '.$class);
+        }
+
+        return $manager;
+    }
+
+    private function flush()
+    {
+        if ($this->flush) {
+            foreach($this->managersToFlush as $manager) {
+                /** @var \Doctrine\Common\Persistence\ObjectManager $manager */
+                $manager->flush();
+            }
+        }
+
+        // Calling a static method in a not static way.
+        $this->managersToFlush->removeAll($this->managersToFlush);
     }
 }
  

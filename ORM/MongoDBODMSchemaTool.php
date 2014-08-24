@@ -11,15 +11,16 @@
 
 namespace h4cc\AliceFixturesBundle\ORM;
 
+use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Doctrine\ODM\MongoDB\DocumentManager;
 
 class MongoDBODMSchemaTool implements SchemaToolInterface
 {
-    protected $schemaManager;
+    protected $managerRegistry;
 
-    public function __construct(DocumentManager $documentManager)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->schemaManager = $documentManager->getSchemaManager();
+        $this->managerRegistry = $managerRegistry;
     }
 
     /**
@@ -27,12 +28,15 @@ class MongoDBODMSchemaTool implements SchemaToolInterface
      */
     public function dropSchema()
     {
-        $this->schemaManager->deleteIndexes();
-        $this->schemaManager->dropCollections();
+        $this->foreachObjectManagers(function(DocumentManager $objectManager) {
+            $schemaManager = $objectManager->getSchemaManager();
+            $schemaManager->deleteIndexes();
+            $schemaManager->dropCollections();
 
-        // NOT Dropping Databases, because of potential permission problems.
-        // (After dropping your own database, only a admin can recreate it.)
-        //$this->schemaManager->dropDatabases();
+            // NOT Dropping Databases, because of potential permission problems.
+            // (After dropping your own database, only a admin can recreate it.)
+            $schemaManager->dropDatabases();
+        });
     }
 
     /**
@@ -40,8 +44,17 @@ class MongoDBODMSchemaTool implements SchemaToolInterface
      */
     public function createSchema()
     {
-        // We assume, that the database already exists and we have permissions for it.
-        $this->schemaManager->createCollections();
-        $this->schemaManager->ensureIndexes();
+        $this->foreachObjectManagers(function(DocumentManager $objectManager) {
+            $schemaManager = $objectManager->getSchemaManager();
+
+            // We assume, that the database already exists and we have permissions for it.
+            $schemaManager->createCollections();
+            $schemaManager->ensureIndexes();
+        });
+    }
+
+    private function foreachObjectManagers($callback)
+    {
+        array_map($callback, $this->managerRegistry->getManagers());
     }
 }

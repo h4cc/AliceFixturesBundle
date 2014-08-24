@@ -24,7 +24,7 @@ Loading of fixtures should be decoupled and easy to integrate where needed.
 This bundle offers loading Fixtures from yaml and php files, also dropping and recreating the ORM Schema.
 Next to Doctrine/ORM, also Doctrine/MongoDB-ODM is supported for recreating schema and persisting fixtures.
 
-If you are searching for Bundle, that provides a way to integrate Alice with Doctrine DataFixtures, have a look at [hautelook/AliceBundle](https://github.com/hautelook/AliceBundle).
+If you are searching for a Bundle that provides a way to integrate Alice with Doctrine DataFixtures, have a look at [hautelook/AliceBundle](https://github.com/hautelook/AliceBundle).
 
 This bundle is also capable of recreating the ORM schema.
 This means _all_ tables managed by Doctrine will be dropped and recreated. A data loss will appear, __you have been warned__.
@@ -64,10 +64,12 @@ Keep in mind, that this bundle is capable of removing whole databases, so be car
 You can globally configure the Seed for random values, the Locale for Faker and a global flag do_flush,
 if ORM flushes of entities should be omitted or not.
 
-A custom 'object_manager' service id can be defined, as well a custom 'schema_manager' service id.
+A custom 'schema_manager' service id can be defined, the Entity or ObjectManagers from Doctrine will be determined by current objects class and mapping.
 
 In case you want to use the default services for either doctrine/orm or doctrine/mongodb-odm, set the "doctrine" value accordingly, which can be either "orm" or "mongodb-odm".
-This setting will just adjust the service-ids for 'object_manager' and 'schema_manager' accordingly, if you have not set them on your own.
+This setting will just adjust the service-ids for ManagerRegistry and 'schema_manager' accordingly, if you have not set them on your own.
+
+A simple configuration using a single default manager:
 
 ```yaml
 # app/config/config_dev.yml
@@ -77,7 +79,6 @@ h4cc_alice_fixtures:
     seed: 1                                     # default
     do_flush: true                              # default
 
-    object_manager: null                        # default
     schema_tool: null                           # default
     doctrine: orm                               # default
 ```
@@ -88,13 +89,13 @@ Or you can use many managers:
 # app/config/config_dev.yml
 
 h4cc_alice_fixtures:
+    default_manager: orm
     managers:
         orm:
             locale: en_US                               # default
             seed: 1                                     # default
             do_flush: true                              # default
 
-            object_manager: null                        # default
             schema_tool: null                           # default
             doctrine: orm                               # default
         mongodb:
@@ -102,7 +103,6 @@ h4cc_alice_fixtures:
             seed: 1
             do_flush: true
 
-            object_manager: null
             schema_tool: null
             doctrine: mongodb-odm
 ```
