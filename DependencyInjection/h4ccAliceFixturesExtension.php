@@ -27,7 +27,6 @@ class h4ccAliceFixturesExtension extends Extension
 {
     const FIXTURE_MANAGER_NAME_MODEL = 'h4cc_alice_fixtures.%s_manager';
     const SCHEMA_TOOL_NAME_MODEL     = 'h4cc_alice_fixtures.orm.%s_schema_tool';
-    const OBJECT_MANAGER_NAME_MODEL  = 'h4cc_alice_fixtures.object_manager.%s';
 
     /**
      * {@inheritDoc}
@@ -45,15 +44,14 @@ class h4ccAliceFixturesExtension extends Extension
 
     private function loadManagersServices(array $config, ContainerBuilder $container)
     {
+        // If there is no default_manager set, use the first configured.
         if (empty($config['default_manager'])) {
             $keys = array_keys($config['managers']);
             $config['default_manager'] = reset($keys);
         }
 
+        // Process all configured managers.
         foreach($config['managers'] as $name => $currentManagerConfig) {
-            if(!in_array($currentManagerConfig['doctrine'], array('orm', 'mongodb-odm'))) {
-                throw new \InvalidArgumentException("Invalid value for 'doctrine'");
-            }
 
             $managerConfig = array(
                 'locale' => $currentManagerConfig['locale'],
@@ -67,7 +65,7 @@ class h4ccAliceFixturesExtension extends Extension
             $managerServiceDefinition->setClass('%h4cc_alice_fixtures.manager.class%');
             $managerServiceDefinition->setArguments(array(
                 $managerConfig,
-                new Reference($this->getObjectManagerServiceIdForCurrentConfig($currentManagerConfig, $container)),
+                new Reference($this->getCleanDoctrineConfigName($currentManagerConfig['doctrine'])),
                 new Reference('h4cc_alice_fixtures.loader.factory'),
                 new Reference($schemaToolServiceId)
             ));
@@ -79,8 +77,6 @@ class h4ccAliceFixturesExtension extends Extension
             $container->setAlias(sprintf(static::SCHEMA_TOOL_NAME_MODEL, $name), $schemaToolServiceId);
         }
 
-        $defaultManagerConfig = $config['managers'][$config['default_manager']];
-
         // set default alias fixture manager
         $container->setAlias(
             'h4cc_alice_fixtures.manager',
@@ -88,94 +84,80 @@ class h4ccAliceFixturesExtension extends Extension
         );
 
         // set default alias schema tool
+        $defaultManagerConfig = $config['managers'][$config['default_manager']];
         $container->setAlias(
             'h4cc_alice_fixtures.orm.schema_tool',
             $this->getSchemaToolServiceIdForCurrentConfig($defaultManagerConfig, $container)
         );
-
-        //set default alias object manager
-        $container->setAlias(
-            'h4cc_alice_fixtures.object_manager',
-            $this->getObjectManagerServiceIdForCurrentConfig($defaultManagerConfig, $container)
-        );
     }
 
-    private function getObjectManagerServiceIdForCurrentConfig(array $currentManagerConfig)
-    {
-        if(!empty($currentManagerConfig['object_manager'])) {
-            $serviceId = $currentManagerConfig['object_manager'];
-        } else {
-            $serviceId = $this->getDefaultManagerServiceId($currentManagerConfig['doctrine']);
-        }
-
-        return $serviceId;
-    }
-
+    /**
+     * Will return the configured schema_tool service id,
+     * or will define a default one lazy and return its id.
+     *
+     * @param array $currentManagerConfig
+     * @param ContainerBuilder $container
+     * @return string
+     */
     private function getSchemaToolServiceIdForCurrentConfig(array $currentManagerConfig, ContainerBuilder $container)
     {
+        // If there is a schema_tool configured, use it.
         if(!empty($currentManagerConfig['schema_tool'])) {
-            $serviceId = $currentManagerConfig['schema_tool'];
-        } else {
-            $serviceId = sprintf('h4cc_alice_fixtures.orm.schema_tool.%s', $this->getCleanDoctrineConfigName($currentManagerConfig['doctrine']));
+            return $currentManagerConfig['schema_tool'];
+        }
 
-            if (!$container->has($serviceId)) {
-                $schemaToolDefinition = new Definition();
-                $schemaToolDefinition->setClass($this->getSchemaToolClass($currentManagerConfig['doctrine']));
-                $schemaToolDefinition->setArguments(array(
-                    new Reference($this->getObjectManagerServiceIdForCurrentConfig($currentManagerConfig, $container))
-                ));
-                $container->setDefinition($serviceId, $schemaToolDefinition);
-            }
+        $serviceId = sprintf(
+            'h4cc_alice_fixtures.orm.schema_tool.%s',
+            $this->getCleanDoctrineConfigName($currentManagerConfig['doctrine'])
+        );
+
+        if (!$container->has($serviceId)) {
+            $schemaToolDefinition = new Definition();
+            $schemaToolDefinition->setClass($this->getSchemaToolClass($currentManagerConfig['doctrine']));
+            $schemaToolDefinition->setArguments(array(
+                new Reference($this->getCleanDoctrineConfigName($currentManagerConfig['doctrine']))
+            ));
+            $container->setDefinition($serviceId, $schemaToolDefinition);
         }
 
         return $serviceId;
     }
 
-    private function getDefaultManagerServiceId($doctrineConfigName)
-    {
-        $defaultManagerServiceId = null;
-
-        switch($doctrineConfigName) {
-            case 'orm':
-                $defaultManagerServiceId = 'doctrine.orm.entity_manager';
-                break;
-            case 'mongodb-odm':
-                $defaultManagerServiceId = 'doctrine_mongodb.odm.document_manager';
-                break;
-        }
-
-        return $defaultManagerServiceId;
-    }
-
+    /**
+     * Will return the default service id for the schema tool of current doctrine subsystem.
+     *
+     * @param $doctrineConfigName
+     * @return string
+     * @throws \InvalidArgumentException
+     */
     private function getSchemaToolClass($doctrineConfigName)
     {
-        $defaultSchemaToolClass = null;
-
         switch($doctrineConfigName) {
-            case 'orm':
-                $defaultSchemaToolClass = '%h4cc_alice_fixtures.orm.schema_tool.doctrine.class%';
-                break;
-            case 'mongodb-odm':
-                $defaultSchemaToolClass = '%h4cc_alice_fixtures.orm.schema_tool.mongodb.class%';
-                break;
+            case Configuration::DOCTRINE_ORM:
+                return '%h4cc_alice_fixtures.orm.schema_tool.doctrine.class%';
+            case Configuration::DOCTRINE_MONGODB_ODM:
+                return '%h4cc_alice_fixtures.orm.schema_tool.mongodb.class%';
+            default:
+                throw new \InvalidArgumentException('Unknown doctrine config key value: '.$doctrineConfigName);
         }
-
-        return $defaultSchemaToolClass;
     }
 
+    /**
+     * Will return the default service ids for the doctrine subsystems.
+     *
+     * @param $doctrineConfigName
+     * @return string
+     * @throws \InvalidArgumentException
+     */
     private function getCleanDoctrineConfigName($doctrineConfigName)
     {
-        $cleanDoctrineConfigName = null;
-
         switch($doctrineConfigName) {
-            case 'orm':
-                $cleanDoctrineConfigName = 'doctrine';
-                break;
-            case 'mongodb-odm':
-                $cleanDoctrineConfigName = 'mongodb';
-                break;
+            case Configuration::DOCTRINE_ORM:
+                return 'doctrine';
+            case Configuration::DOCTRINE_MONGODB_ODM:
+                return 'doctrine_mongodb';
+            default:
+                throw new \InvalidArgumentException('Unknown doctrine config key value: '.$doctrineConfigName);
         }
-
-        return $cleanDoctrineConfigName;
     }
 }

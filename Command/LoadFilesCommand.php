@@ -35,7 +35,7 @@ class LoadFilesCommand extends ContainerAwareCommand
           ->addOption('locale', 'l', InputOption::VALUE_OPTIONAL, 'Locale for Faker provider.', 'en_EN')
           ->addOption('no-persist', 'np', InputOption::VALUE_NONE, 'Persist loaded entities in database.')
           ->addOption('drop', 'd', InputOption::VALUE_NONE, 'Drop and create Schema before loading.')
-          ->addOption('manager', 'm', InputOption::VALUE_OPTIONAL, 'The manager name to used.', 'default');
+          ->addOption('manager', 'm', InputOption::VALUE_OPTIONAL, 'The fixture manager name to used.', 'default');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
