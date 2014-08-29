@@ -146,9 +146,9 @@ class FixtureManager implements FixtureManagerInterface
             }
         }
 
-        // Objects are the loaded entities without "local".
+        // Objects are the loaded entities without "local". Will contain the returned objects.
         $objects = array();
-        // References contain, _all_ objects loaded.
+        // References contain, _all_ objects loaded. Needed only for loading.
         $references = array();
 
         // Load each file
@@ -166,11 +166,6 @@ class FixtureManager implements FixtureManagerInterface
             $objects = array_merge($objects, $newObjects);
         }
 
-        // Need to remove the "local" objects from references table.
-        // This can be skipped, when this change has been released:
-        // https://github.com/nelmio/alice/commit/d3bdb0d0e67e0b00d6e0b4df6b99a89bc7db882a
-        $objects = $this->removeLocalReferences($references, $objects);
-
         if ($set->getDoPersist()) {
             $this->persist($objects, $set->getDoDrop());
             $this->logDebug("Persisted " . count($objects) . " loaded objects.");
@@ -180,23 +175,6 @@ class FixtureManager implements FixtureManagerInterface
         $this->orm->detach($objects);
 
         return $objects;
-    }
-
-    /**
-     * Helper for a "intersect" of loaded objects.
-     *
-     * @param $base
-     * @param $extra
-     * @return mixed
-     */
-    private function removeLocalReferences($base, $extra) {
-        $intersect = $base;
-        foreach ($base as $key => $value){
-            if (!in_array($value, $extra)){
-                unset($intersect[$key]);
-            }
-        }
-        return $intersect;
     }
 
     /**
