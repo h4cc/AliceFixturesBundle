@@ -20,6 +20,7 @@ use Symfony\Component\DependencyInjection\Container;
  * Class LoadSetsCommandTest.
  *
  * @author Julius Beckmann <github@h4cc.de>
+ * @covers h4cc\AliceFixturesBundle\Command\LoadSetsCommand
  */
 class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -57,6 +58,7 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
 
         $container = new Container();
         $container->set('h4cc_alice_fixtures.manager', $this->managerMock);
+        $container->set('h4cc_alice_fixtures.mongodb_manager', $this->managerMock);
         $container->set('kernel', $this->kernelMock);
 
         $this->command = $this->application->find('h4cc_alice_fixtures:load:sets');
@@ -71,6 +73,36 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
 
         $tester->execute(
             array('command' => $this->command->getName(), 'sets' => array(__DIR__ . '/../testdata/SimpleSet.php'))
+        );
+    }
+
+    public function testLoadWithoutDefaultManager()
+    {
+        $this->managerMock->expects($this->once())->method('load');
+
+        $tester = new CommandTester($this->command);
+
+        $tester->execute(
+            array(
+                'command' => $this->command->getName(),
+                '--manager' => 'mongodb',
+                'sets' => array(__DIR__ . '/../../testdata/SimpleSet.php'),
+            )
+        );
+    }
+
+    public function testLoadWithoutDefaultManager()
+    {
+        $this->managerMock->expects($this->once())->method('load');
+
+        $tester = new CommandTester($this->command);
+
+        $tester->execute(
+            array(
+                'command' => $this->command->getName(),
+                '--manager' => 'mongodb',
+                'sets' => array(__DIR__ . '/../../testdata/SimpleSet.php'),
+            )
         );
     }
 

@@ -18,6 +18,7 @@ use Nelmio\Alice\Loader\Yaml;
  * Class FixtureManagerTest
  *
  * @author Julius Beckmann <github@h4cc.de>
+ * @covers h4cc\AliceFixturesBundle\Fixtures\FixtureManager
  */
 class FixtureManagerTest extends \PHPUnit_Framework_TestCase
 {

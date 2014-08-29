@@ -17,6 +17,7 @@ use h4cc\AliceFixturesBundle\Fixtures\FixtureSet;
  * Class FixtureSetTest
  *
  * @author Julius Beckmann <github@h4cc.de>
+ * @covers h4cc\AliceFixturesBundle\Fixtures\FixtureSet
  */
 class FixtureSetTest extends \PHPUnit_Framework_TestCase
 {

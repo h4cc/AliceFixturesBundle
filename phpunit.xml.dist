@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" bootstrap="Tests/bootstrap.php">
+<phpunit
+        colors="true"
+        bootstrap="Tests/bootstrap.php"
+        forceCoversAnnotation="true"
+        >
 
     <testsuites>
         <testsuite name="AliceFixturesBundle Test Suite">

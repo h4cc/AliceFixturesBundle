@@ -19,6 +19,7 @@ use h4cc\AliceFixturesBundle\DependencyInjection\Compiler\ProcessorCompilerPass;
  * Class h4ccAliceFixturesBundleTest
  *
  * @author Julius Beckmann <github@h4cc.de>
+ * @covers h4cc\AliceFixturesBundle\h4ccAliceFixturesBundle
  */
 class h4ccAliceFixturesBundleTest extends \PHPUnit_Framework_TestCase
 {

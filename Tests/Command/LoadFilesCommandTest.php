@@ -21,6 +21,7 @@ use Symfony\Component\DependencyInjection\Container;
  * Class LoadFilesCommandTest
  *
  * @author Julius Beckmann <github@h4cc.de>
+ * @covers h4cc\AliceFixturesBundle\Command\LoadFilesCommand
  */
 class LoadFilesCommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -55,6 +56,9 @@ class LoadFilesCommandTest extends \PHPUnit_Framework_TestCase
         $container->set('h4cc_alice_fixtures.manager', $this->managerMock);
         $container->set('h4cc_alice_fixtures.orm.schema_tool', $this->schemaToolMock);
 
+        $container->set('h4cc_alice_fixtures.mongodb_manager', $this->managerMock);
+        $container->set('h4cc_alice_fixtures.orm.mongodb_schema_tool', $this->schemaToolMock);
+
         $this->command = $this->application->find('h4cc_alice_fixtures:load:files');
         $this->command->setContainer($container);
     }
@@ -69,6 +73,38 @@ class LoadFilesCommandTest extends \PHPUnit_Framework_TestCase
             array(
                 'command' => $this->command->getName(),
                 'files' => array(__DIR__ . '/../testdata/part_1.yml'),
+                '--drop' => true
+            )
+        );
+    }
+
+    public function testLoadWithoutDefaultManager()
+    {
+        $this->managerMock->expects($this->once())->method('load');
+
+        $tester = new CommandTester($this->command);
+
+        $tester->execute(
+            array(
+                'command' => $this->command->getName(),
+                'files' => array(__DIR__ . '/../../testdata/part_1.yml'),
+                '--manager' => 'mongodb',
+                '--drop' => true
+            )
+        );
+    }
+
+    public function testLoadWihtoutDefaultManager()
+    {
+        $this->managerMock->expects($this->once())->method('load');
+
+        $tester = new CommandTester($this->command);
+
+        $tester->execute(
+            array(
+                'command' => $this->command->getName(),
+                'files' => array(__DIR__ . '/../../testdata/part_1.yml'),
+                '--manager' => 'mongodb',
                 '--drop' => true
             )
         );
