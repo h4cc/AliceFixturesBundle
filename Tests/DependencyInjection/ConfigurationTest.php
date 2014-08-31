@@ -48,7 +48,6 @@ class ConfigurationTest extends AbstractConfigurationTestCase
                 'seed' => 9876,
                 'do_flush' => false,
 
-                'object_manager' => 'doctrine_object_manager',
                 'schema_tool' => 'doctrine_schema_tool',
 
                 'doctrine' => 'mongodb-odm',
@@ -64,7 +63,6 @@ class ConfigurationTest extends AbstractConfigurationTestCase
                         'seed' => 9876,
                         'do_flush' => false,
 
-                        'object_manager' => 'doctrine_object_manager',
                         'schema_tool' => 'doctrine_schema_tool',
 
                         'doctrine' => 'mongodb-odm',
@@ -86,7 +84,6 @@ class ConfigurationTest extends AbstractConfigurationTestCase
                         'seed' => 9876,
                         'do_flush' => false,
 
-                        'object_manager' => 'doctrine_object_manager',
                         'schema_tool' => 'doctrine_schema_tool',
 
                         'doctrine' => 'mongodb-odm',
@@ -102,7 +99,6 @@ class ConfigurationTest extends AbstractConfigurationTestCase
                         'seed' => 9876,
                         'do_flush' => false,
 
-                        'object_manager' => 'doctrine_object_manager',
                         'schema_tool' => 'doctrine_schema_tool',
 
                         'doctrine' => 'mongodb-odm',

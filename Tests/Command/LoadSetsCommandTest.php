@@ -86,22 +86,7 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
             array(
                 'command' => $this->command->getName(),
                 '--manager' => 'mongodb',
-                'sets' => array(__DIR__ . '/../../testdata/SimpleSet.php'),
-            )
-        );
-    }
-
-    public function testLoadWithoutDefaultManager()
-    {
-        $this->managerMock->expects($this->once())->method('load');
-
-        $tester = new CommandTester($this->command);
-
-        $tester->execute(
-            array(
-                'command' => $this->command->getName(),
-                '--manager' => 'mongodb',
-                'sets' => array(__DIR__ . '/../../testdata/SimpleSet.php'),
+                'sets' => array(__DIR__ . '/../testdata/SimpleSet.php'),
             )
         );
     }

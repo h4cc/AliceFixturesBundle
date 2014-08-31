@@ -87,23 +87,7 @@ class LoadFilesCommandTest extends \PHPUnit_Framework_TestCase
         $tester->execute(
             array(
                 'command' => $this->command->getName(),
-                'files' => array(__DIR__ . '/../../testdata/part_1.yml'),
-                '--manager' => 'mongodb',
-                '--drop' => true
-            )
-        );
-    }
-
-    public function testLoadWihtoutDefaultManager()
-    {
-        $this->managerMock->expects($this->once())->method('load');
-
-        $tester = new CommandTester($this->command);
-
-        $tester->execute(
-            array(
-                'command' => $this->command->getName(),
-                'files' => array(__DIR__ . '/../../testdata/part_1.yml'),
+                'files' => array(__DIR__ . '/../testdata/part_1.yml'),
                 '--manager' => 'mongodb',
                 '--drop' => true
             )
