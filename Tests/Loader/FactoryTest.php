@@ -17,6 +17,7 @@ use h4cc\AliceFixturesBundle\Loader\Factory;
  * Class FactoryTest
  *
  * @author Julius Beckmann <github@h4cc.de>
+ * @covers h4cc\AliceFixturesBundle\Loader\Factory
  */
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {

@@ -17,6 +17,7 @@ use h4cc\AliceFixturesBundle\DependencyInjection\Compiler\ProviderCompilerPass;
  * Class ProviderCompilerPassTest
  *
  * @author Julius Beckmann <github@h4cc.de>
+ * @covers h4cc\AliceFixturesBundle\DependencyInjection\Compiler\ProviderCompilerPass
  */
 class ProviderCompilerPassTest extends \PHPUnit_Framework_TestCase
 {

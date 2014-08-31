@@ -22,7 +22,8 @@
         "symfony/framework-bundle": "~2.1",
         "doctrine/orm": "~2.1",
         "doctrine/mongodb-odm": "1.0.*@dev",
-        "doctrine/mongodb-odm-bundle": "3.0.*@dev"
+        "doctrine/mongodb-odm-bundle": "3.0.*@dev",
+        "matthiasnoback/symfony-config-test": "~0.2.1"
     },
     "autoload": {
         "psr-4": {

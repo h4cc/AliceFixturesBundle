@@ -17,6 +17,7 @@ use h4cc\AliceFixturesBundle\DependencyInjection\Compiler\ProcessorCompilerPass;
  * Class ProcessorCompilerPassTest
  *
  * @author Julius Beckmann <github@h4cc.de>
+ * @covers h4cc\AliceFixturesBundle\DependencyInjection\Compiler\ProcessorCompilerPass
  */
 class ProcessorCompilerPassTest extends \PHPUnit_Framework_TestCase
 {
