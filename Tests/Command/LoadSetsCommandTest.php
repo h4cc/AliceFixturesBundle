@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace h4cc\AliceFixturesBundle\Tests\DependencyInjection\Command;
+namespace h4cc\AliceFixturesBundle\Tests\Command;
 
 use h4cc\AliceFixturesBundle\Command\LoadSetsCommand;
 use Symfony\Component\Console\Application;
@@ -70,7 +70,7 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
         $tester = new CommandTester($this->command);
 
         $tester->execute(
-            array('command' => $this->command->getName(), 'sets' => array(__DIR__ . '/../../testdata/SimpleSet.php'))
+            array('command' => $this->command->getName(), 'sets' => array(__DIR__ . '/../testdata/SimpleSet.php'))
         );
     }
 

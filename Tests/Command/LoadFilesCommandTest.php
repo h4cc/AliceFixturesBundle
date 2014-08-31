@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace h4cc\AliceFixturesBundle\Tests\DependencyInjection\Command;
+namespace h4cc\AliceFixturesBundle\Tests\Command;
 
 use h4cc\AliceFixturesBundle\Command\LoadFilesCommand;
 use h4cc\AliceFixturesBundle\Fixtures\FixtureSet;
@@ -68,7 +68,7 @@ class LoadFilesCommandTest extends \PHPUnit_Framework_TestCase
         $tester->execute(
             array(
                 'command' => $this->command->getName(),
-                'files' => array(__DIR__ . '/../../testdata/part_1.yml'),
+                'files' => array(__DIR__ . '/../testdata/part_1.yml'),
                 '--drop' => true
             )
         );

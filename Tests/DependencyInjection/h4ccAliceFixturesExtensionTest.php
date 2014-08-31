@@ -64,7 +64,6 @@ class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
         ));
 
         // Check that default service aliases are set.
-        $this->assertEquals('doctrine.orm.entity_manager', $container->getAlias('h4cc_alice_fixtures.object_manager'));
         $this->assertEquals('h4cc_alice_fixtures.orm.schema_tool.doctrine', $container->getAlias('h4cc_alice_fixtures.orm.schema_tool'));
     }
 
@@ -72,12 +71,10 @@ class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->getContainerWithLoadedExtension(array(
             'doctrine' => 'orm',
-            'object_manager' => 'my_object_manager',
             'schema_tool' => 'my_schema_tool',
         ));
 
         // Check that the custom aliases are set.
-        $this->assertEquals('my_object_manager', $container->getAlias('h4cc_alice_fixtures.object_manager'));
         $this->assertEquals('my_schema_tool', $container->getAlias('h4cc_alice_fixtures.orm.schema_tool'));
     }
 
@@ -88,20 +85,17 @@ class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
         ));
 
         // Check that default service aliases are set.
-        $this->assertEquals('doctrine_mongodb.odm.document_manager', $container->getAlias('h4cc_alice_fixtures.object_manager'));
-        $this->assertEquals('h4cc_alice_fixtures.orm.schema_tool.mongodb', $container->getAlias('h4cc_alice_fixtures.orm.schema_tool'));
+        $this->assertEquals('h4cc_alice_fixtures.orm.schema_tool.doctrine_mongodb', $container->getAlias('h4cc_alice_fixtures.orm.schema_tool'));
     }
 
     public function testLoadWithCustomMongoDbODM()
     {
         $container = $this->getContainerWithLoadedExtension(array(
             'doctrine' => 'mongodb-odm',
-            'object_manager' => 'my_object_manager',
             'schema_tool' => 'my_schema_tool',
         ));
 
         // Check that the custom aliases are set.
-        $this->assertEquals('my_object_manager', $container->getAlias('h4cc_alice_fixtures.object_manager'));
         $this->assertEquals('my_schema_tool', $container->getAlias('h4cc_alice_fixtures.orm.schema_tool'));
     }
 
@@ -129,12 +123,6 @@ class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
             'h4cc_alice_fixtures.orm.schema_tool.doctrine',
             $container->getAlias('h4cc_alice_fixtures.orm.schema_tool')
         );
-
-        //set default alias object manager
-        $this->assertEquals(
-            'doctrine.orm.entity_manager',
-            $container->getAlias('h4cc_alice_fixtures.object_manager')
-        );
     }
 
     public function testLoadManyManagersWithDefaultValuesAndWithDefaultManagerSet()
@@ -159,14 +147,8 @@ class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            'h4cc_alice_fixtures.orm.schema_tool.mongodb',
+            'h4cc_alice_fixtures.orm.schema_tool.doctrine_mongodb',
             $container->getAlias('h4cc_alice_fixtures.orm.schema_tool')
-        );
-
-        //set default alias object manager
-        $this->assertEquals(
-            'doctrine_mongodb.odm.document_manager',
-            $container->getAlias('h4cc_alice_fixtures.object_manager')
         );
     }
 
@@ -187,7 +169,6 @@ class h4ccAliceFixturesExtensionTest extends \PHPUnit_Framework_TestCase
             array('h4cc_alice_fixtures.manager'),
             array('h4cc_alice_fixtures.orm.schema_tool'),
             array('h4cc_alice_fixtures.orm.schema_tool.doctrine'),
-            array('h4cc_alice_fixtures.object_manager'),
         );
     }
 }
