@@ -186,23 +186,6 @@ class FixtureManager implements FixtureManagerInterface
     }
 
     /**
-     * Helper for a "intersect" of loaded objects.
-     *
-     * @param $base
-     * @param $extra
-     * @return mixed
-     */
-    private function removeLocalReferences($base, $extra) {
-        $intersect = $base;
-        foreach ($base as $key => $value){
-            if (!in_array($value, $extra)){
-                unset($intersect[$key]);
-            }
-        }
-        return $intersect;
-    }
-
-    /**
      * Returns the ORM.
      *
      * @throws \InvalidArgumentException

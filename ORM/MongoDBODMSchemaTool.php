@@ -11,7 +11,7 @@
 
 namespace h4cc\AliceFixturesBundle\ORM;
 
-use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ODM\MongoDB\DocumentManager;
 
 class MongoDBODMSchemaTool implements SchemaToolInterface
@@ -35,7 +35,7 @@ class MongoDBODMSchemaTool implements SchemaToolInterface
 
             // NOT Dropping Databases, because of potential permission problems.
             // (After dropping your own database, only a admin can recreate it.)
-            $schemaManager->dropDatabases();
+            //$schemaManager->dropDatabases();
         });
     }
 

@@ -93,13 +93,14 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage File 'Tests/testdata/InvalidSet.php' does not return a FixtureSetInterface.
      */
     public function testLoadExceptionNotAFixtureSetInterface()
     {
         $tester = new CommandTester($this->command);
 
         $tester->execute(
-            array('command' => $this->command->getName(), 'sets' => array(__DIR__ . '/../../testdata/InvalidSet.php'))
+            array('command' => $this->command->getName(), 'sets' => array('Tests/testdata/InvalidSet.php'))
         );
     }
 
