@@ -64,6 +64,7 @@ class ConfigurationTest extends AbstractConfigurationTestCase
                         'do_flush' => false,
 
                         'schema_tool' => 'doctrine_schema_tool',
+                        'object_manager' => null,
 
                         'doctrine' => 'mongodb-odm',
                     )
@@ -100,11 +101,30 @@ class ConfigurationTest extends AbstractConfigurationTestCase
                         'do_flush' => false,
 
                         'schema_tool' => 'doctrine_schema_tool',
+                        'object_manager' => null,
 
                         'doctrine' => 'mongodb-odm',
                     )
                 ),
             )
+        );
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Invalid configuration for path "h4cc_alice_fixtures.managers.my_manager.object_manager": Using a deprecated configuration value: "object_manager". Remove it from your configuration.
+     */
+    public function testDeprecatedObjectManager()
+    {
+        $this->assertProcessedConfigurationEquals(
+            array(array(
+                'managers' => array(
+                    'my_manager' => array(
+                        'object_manager' => 'doctrine.manager',
+                    )
+                )
+            )),
+            array()
         );
     }
 }
