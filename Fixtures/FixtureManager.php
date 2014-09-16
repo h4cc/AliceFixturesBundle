@@ -268,7 +268,7 @@ class FixtureManager implements FixtureManagerInterface
     public function addProvider($provider)
     {
         $this->providers[] = $provider;
-        $this->providers = array_unique($this->providers);
+        $this->providers = array_unique($this->providers, SORT_REGULAR);
         $this->logDebug('Added provider: ' . get_class($provider));
     }
 
