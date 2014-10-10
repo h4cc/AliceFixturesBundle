@@ -285,7 +285,11 @@ class FixtureManager implements FixtureManagerInterface
                 $loader->setLogger($this->logger);
             }
         }
-        $loader->setProviders($this->providers);
+        if (is_callable($loader, 'addProvider')) { // new in Alice 1.7.2
+            $loader->addProvider($this->providers);
+        } else { // BC path
+            $loader->setProviders($this->providers);
+        }
     }
 
     /**
