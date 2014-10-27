@@ -73,6 +73,9 @@ class LoadFilesCommand extends ContainerAwareCommand
             $schemaTool->createSchema();
         }
 
+        // Store all loaded references in this array, so they can be used by other FixtureSets.
+        $references = array();
+
         foreach ($files as $file) {
             $output->write("Loading file '$file' ... ");
 
@@ -83,7 +86,10 @@ class LoadFilesCommand extends ContainerAwareCommand
             $set->setLocale($input->getOption('locale'));
             $set->setSeed($input->getOption('seed'));
 
-            $entities = $manager->load($set);
+            $entities = $manager->load($set, $references);
+
+            // Only reusing loaded entities. Internal references are ignored because of intended private state.
+            $references = array_merge($references, $entities);
 
             $output->writeln("loaded " . count($entities) . " entities ... done.");
         }

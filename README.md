@@ -33,6 +33,7 @@ This means _all_ tables managed by Doctrine will be dropped and recreated. A dat
 ## Installation
 
 Simply require the bundle by its name with composer:
+
 ```bash
 $ php composer.phar require h4cc/alice-fixtures-bundle
 ```
@@ -40,6 +41,7 @@ Follow the 'dev-master' branch for latest dev version. But i recommend to use mo
 
 
 After that, add the Bundle to your Kernel, most likely in the "dev" or "test" environment.
+
 ```php
 <?php
 // app/AppKernel.php
@@ -108,6 +110,7 @@ h4cc_alice_fixtures:
 ```
 
 Check out this command for a always up-to-date configuration reference:
+
 ```
 $ php app/console config:dump-reference h4cc_alice_fixtures
 ```
@@ -146,6 +149,7 @@ A more advanced way of loading fixtures is using "FixtureSets".
 Look at it like a fixture configuration object for multiple fixture files and options.
 
 Example:
+
 ```php
 $manager = $this->getContainer()->get('h4cc_alice_fixtures.manager');
 
@@ -177,23 +181,31 @@ h4cc_alice_fixtures
   h4cc_alice_fixtures:load:sets         Load fixture sets using alice and faker.
 ```
 
+By default, all fixture files or sets will share their references. This way a Bundle can reference the fixtures from another bundles.
+
 Example for loading single files using all available options:
+
 ```bash
 $ php app/console h4cc_alice_fixtures:load:files --manager=default --type=yaml --seed=42 --local=de_DE --no-persist --drop src/Acme/DemoBundle/Fixtures/Users.yml src/Acme/DemoBundle/Fixtures/Articles.yml
 ```
 
 Example command for loading the given FixtureSet:
+
 ```bash
 $ php app/console h4cc_alice_fixtures:load:sets src/Acme/DemoBundle/Fixtures/UsersAndArticlesSet.php
 ```
 
-When your FixtureSets are stored at the default path 'DataFixtures/Alice/' and are named like 'ExampleSet.php', they can be found automaticaly. Like the fixtures in Doctrine Datafixtures do.
+When your FixtureSets are stored at the default path 'DataFixtures/Alice/' and are named ending in ...'Set.php', they can be found automaticaly. Like the fixtures in Doctrine Datafixtures do.
 To load the default fixture sets, simply execute this command:
+
 ```bash
 $ php app/console h4cc_alice_fixtures:load:sets
 ```
 
-Preconfigured FixtureSet:
+The order in which the bundles are loaded is defined by the order in which they are defined in `AppKernel`.
+
+Example for a Preconfigured FixtureSet:
+
 ```php
 <?php
 
@@ -212,6 +224,13 @@ return $set;
 ```
 Such a file has to return a Object with the FixtureSetInterface Interface.
 
+### FixtureSets from different Bundles
+
+When using multiple bundles like `MyCommonBundle` and `MyUserBundle`, there are a few things to do and know:
+
+* The order in which `h4cc_alice_fixtures:load:sets` will load FixtureSets will be the same order as in `AppKernel::registerBundles().
+* All FixtureSets will use a global state of references. This way the `MyUserBundle` can use entities from `MyCommonBundle`.
+* A circular-reference between FixtureSets is not possible, because only already loaded entities can be referenced.
 
 ## Demo Application
 
@@ -226,6 +245,7 @@ If needed, the fixtures can also be loaded in a PHPUnit test.
 Accessing the needed container in a Symfony2 environment is described here: http://symfony.com/doc/current/book/testing.html#accessing-the-container
 
 Example:
+
 ```php
 // Ensuring the same fixtures for each testcase.
 public function setUp()
@@ -250,6 +270,7 @@ These methods can be used in the fixture files for own testdata or even calculat
 To register a provider, create a service and tag it.
 
 Example:
+
 ```yaml
 services:
     your.faker.provider:
@@ -264,6 +285,7 @@ A alice processor can be used to manipulate a object _before_ and _after_ persis
 To register a own processor, create a service and tag it.
 
 Example:
+
 ```yaml
 services:
     your.alice.processor:

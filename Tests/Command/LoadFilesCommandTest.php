@@ -65,7 +65,7 @@ class LoadFilesCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testLoad()
     {
-        $this->managerMock->expects($this->once())->method('load');
+        $this->managerMock->expects($this->once())->method('load')->willReturn(array('abc' => 42));
 
         $tester = new CommandTester($this->command);
 
@@ -80,7 +80,7 @@ class LoadFilesCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadWithoutDefaultManager()
     {
-        $this->managerMock->expects($this->once())->method('load');
+        $this->managerMock->expects($this->once())->method('load')->willReturn(array('abc' => 42));
 
         $tester = new CommandTester($this->command);
 
