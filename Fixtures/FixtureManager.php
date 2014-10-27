@@ -146,6 +146,7 @@ class FixtureManager implements FixtureManagerInterface
             $loader = $loaders[$file['type']];
 
             $loader->setReferences($references);
+            $this->logDebug(sprintf('Loading file: %s ...', $file['path']));
             $newObjects = $loader->load($file['path']);
             $references = $loader->getReferences();
 
