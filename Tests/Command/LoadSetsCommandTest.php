@@ -67,7 +67,7 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testLoad()
     {
-        $this->managerMock->expects($this->once())->method('load');
+        $this->managerMock->expects($this->once())->method('load')->willReturn(array('abc' => 42));
 
         $tester = new CommandTester($this->command);
 
@@ -78,7 +78,7 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadWithoutDefaultManager()
     {
-        $this->managerMock->expects($this->once())->method('load');
+        $this->managerMock->expects($this->once())->method('load')->willReturn(array('abc' => 42));
 
         $tester = new CommandTester($this->command);
 
@@ -120,6 +120,7 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
     public function testLoadWithDefaultLoadedSet()
     {
         $this->bundleMock->expects($this->any())->method('getPath')->will($this->returnValue(__DIR__.'/SampleBundle'));
+        $this->managerMock->expects($this->once())->method('load')->willReturn(array('abc' => 42));
 
         $tester = new CommandTester($this->command);
 
@@ -127,7 +128,7 @@ class LoadSetsCommandTest extends \PHPUnit_Framework_TestCase
             array('command' => $this->command->getName())
         );
 
-        $this->assertEquals("Loading file '".__DIR__.'/SampleBundle'."/DataFixtures/Alice/FooSet.php' ... loaded 0 entities ... done.\n", $tester->getDisplay());
+        $this->assertEquals("Loading file '".__DIR__.'/SampleBundle'."/DataFixtures/Alice/FooSet.php' ... loaded 1 entities ... done.\n", $tester->getDisplay());
     }
 
     /**

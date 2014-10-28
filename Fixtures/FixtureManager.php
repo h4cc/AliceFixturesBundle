@@ -129,14 +129,14 @@ class FixtureManager implements FixtureManagerInterface
     /**
      * {@inheritDoc}
      */
-    public function load(FixtureSet $set)
+    public function load(FixtureSet $set, array $initialReferences = array())
     {
         $loaders = $this->createNeededLoaders($set);
 
         // Objects are the loaded entities without "local".
         $objects = array();
         // References contain, _all_ objects loaded. Needed only for loading.
-        $references = array();
+        $references = $initialReferences;
 
         // Load each file
         foreach ($set->getFiles() as $file) {
@@ -158,9 +158,6 @@ class FixtureManager implements FixtureManagerInterface
             $this->persist($objects, $set->getDoDrop());
             $this->logDebug("Persisted " . count($objects) . " loaded objects.");
         }
-
-        // Detach entities
-        $this->getORM()->detach($objects);
 
         return $objects;
     }

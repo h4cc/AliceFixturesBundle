@@ -39,10 +39,13 @@ interface FixtureManagerInterface
      * Loads objects/entities from given FixtureSet.
      * The FixtureSet Object will decide, if drop or persist will be done as well as all other parameters.
      *
+     * The initial references array can be used to provide already loaded entities so they can be referenced.
+     *
      * @param FixtureSet $set
+     * @param array $initialReferences
      * @return mixed
      */
-    public function load(FixtureSet $set);
+    public function load(FixtureSet $set, array $initialReferences = array());
 
     /**
      * Persists all given entities.
