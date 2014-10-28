@@ -53,4 +53,9 @@ interface FixtureSetInterface
      * @return int|null
      */
     public function getSeed();
+
+    /**
+     * @return int
+     */
+    public function getOrder();
 }

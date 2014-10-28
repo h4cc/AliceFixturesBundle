@@ -41,6 +41,7 @@ class FixtureSet implements FixtureSetInterface
             'seed' => 1,
             'do_drop' => false,
             'do_persist' => true,
+            'order' => 1,
         );
         $this->options = array_merge(
             $defaultOptions,
@@ -134,5 +135,21 @@ class FixtureSet implements FixtureSetInterface
     public function setSeed($seed)
     {
         $this->options['seed'] = is_null($seed) ? null : (integer)$seed;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrder()
+    {
+        return $this->options['order'];
+    }
+
+    /**
+     * @param int $order
+     */
+    public function setOrder($order)
+    {
+        $this->options['order'] = is_null($order) ? 1 : (integer)$order;
     }
 }

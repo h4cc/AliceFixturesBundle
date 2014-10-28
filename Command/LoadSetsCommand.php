@@ -74,26 +74,9 @@ class LoadSetsCommand extends ContainerAwareCommand
             $schemaTool->createSchema();
         }
 
-        // Store all loaded references in this array, so they can be used by other FixtureSets.
-        $references = array();
+        $fixtureSets = $this->loadFixtureSetsFromFiles($sets);
 
-        foreach ($sets as $file) {
-            $output->write("Loading file '$file' ... ");
-
-            // The file should return a FixtureSetInterface
-            $set = $this->loadSet($file);
-
-            if (!$set || !($set instanceof FixtureSetInterface)) {
-                throw new \InvalidArgumentException("File '$file' does not return a FixtureSetInterface.");
-            }
-
-            $entities = $manager->load($set, $references);
-
-            // Only reusing loaded entities. Internal references are ignored because of intended private state.
-            $references = array_merge($references, $entities);
-
-            $output->writeln("loaded " . count($entities) . " entities ... done.");
-        }
+        $this->loadFixtureSets($fixtureSets, $manager, $output);
     }
     
     protected function loadSet($file)
@@ -126,5 +109,56 @@ class LoadSetsCommand extends ContainerAwareCommand
 
         // Return paths to sets.
         return array_keys(iterator_to_array($finder));
+    }
+
+    private function loadFixtureSetsFromFiles($sets)
+    {
+        $fixtureSets = array();
+
+        foreach ($sets as $file) {
+
+            // The file should return a FixtureSetInterface
+            $set = $this->loadSet($file);
+
+            if (!$set || !($set instanceof FixtureSetInterface)) {
+                throw new \InvalidArgumentException("File '$file' does not return a FixtureSetInterface.");
+            }
+
+            $fixtureSets[$file] = $set;
+        }
+
+        return $this->orderFixtureSets($fixtureSets);
+    }
+
+    private function orderFixtureSets($fixtureSets)
+    {
+        uasort($fixtureSets, function(FixtureSetInterface $setA, FixtureSetInterface $setB) {
+            $a = $setA->getOrder();
+            $b = $setB->getOrder();
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a < $b) ? -1 : 1;
+        });
+
+        return $fixtureSets;
+    }
+
+    private function loadFixtureSets($fixtureSets, $manager, $output)
+    {
+        // Store all loaded references in this array, so they can be used by other FixtureSets.
+        $references = array();
+
+        foreach ($fixtureSets as $file =>  $set) {
+
+            $output->write("Loading file '$file' ... ");
+
+            $entities = $manager->load($set, $references);
+
+            // Only reusing loaded entities. Internal references are ignored because of intended private state.
+            $references = array_merge($references, $entities);
+
+            $output->writeln("loaded " . count($entities) . " entities ... done.");
+        }
     }
 }
