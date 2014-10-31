@@ -203,6 +203,8 @@ $ php app/console h4cc_alice_fixtures:load:sets
 ```
 
 The order in which the bundles are loaded is defined by the order in which they are defined in `AppKernel`.
+A customization to that can be done using the "order" value in your fixture sets.
+Default is '1' and lower order values will be taken first.
 
 Example for a Preconfigured FixtureSet:
 
@@ -215,6 +217,7 @@ $set = new h4cc\AliceFixturesBundle\Fixtures\FixtureSet(array(
     'seed' => 42,
     'do_drop' => true,
     'do_persist' => true,
+    'order' => 5
 ));
 
 $set->addFile(__DIR__.'/Users.yml', 'yaml');

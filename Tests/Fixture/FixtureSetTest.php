@@ -40,11 +40,13 @@ class FixtureSetTest extends \PHPUnit_Framework_TestCase
                 'seed' => 42,
                 'do_drop' => true,
                 'do_persist' => false,
+                'order' => 1337
             )
         );
 
         $this->assertEquals('de_DE', $set->getLocale());
         $this->assertEquals(42, $set->getSeed());
+        $this->assertEquals(1337, $set->getOrder());
         $this->assertEquals(true, $set->getDoDrop());
         $this->assertEquals(false, $set->getDoPersist());
         $this->assertEquals(array(), $set->getFiles());
@@ -56,6 +58,7 @@ class FixtureSetTest extends \PHPUnit_Framework_TestCase
 
         $set->setLocale('de_DE');
         $set->setSeed(42);
+        $set->setOrder(1337);
         $set->setDoDrop(true);
         $set->setDoPersist(false);
         $set->addFile('/foo', 'bar');
@@ -63,6 +66,7 @@ class FixtureSetTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('de_DE', $set->getLocale());
         $this->assertEquals(42, $set->getSeed());
+        $this->assertEquals(1337, $set->getOrder());
         $this->assertEquals(true, $set->getDoDrop());
         $this->assertEquals(false, $set->getDoPersist());
         $this->assertEquals(
