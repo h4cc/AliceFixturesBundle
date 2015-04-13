@@ -188,7 +188,6 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
           ->with('yaml', 'en_EN')->will($this->returnValue($this->yamlLoaderMock));
 
         $this->yamlLoaderMock->expects($this->once())->method('load')->will($this->returnValue(array()));
-        $this->yamlLoaderMock->expects($this->once())->method('setProviders');
 
         $provider = function () {
             return "foobar";
