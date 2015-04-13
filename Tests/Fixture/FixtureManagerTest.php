@@ -55,7 +55,7 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
           ->getMock();
 
         $this->yamlLoaderMock = $this->getMockBuilder('\Nelmio\Alice\Loader\Yaml')
-          ->setMethods(array('setProviders', 'load'))
+          ->setMethods(array('setProviders', 'addProvider', 'load'))
           ->disableOriginalConstructor()
           ->getMock();
 
