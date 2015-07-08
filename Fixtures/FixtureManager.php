@@ -138,10 +138,10 @@ class FixtureManager implements FixtureManagerInterface
         // References contain, _all_ objects loaded. Needed only for loading.
         $references = $initialReferences;
 
+        $this->initSeedFromSet($set);
+
         // Load each file
         foreach ($set->getFiles() as $file) {
-            // Use seed before each loading, so results will be more predictable.
-            $this->initSeedFromSet($set);
 
             $loader = $loaders[$file['type']];
 
