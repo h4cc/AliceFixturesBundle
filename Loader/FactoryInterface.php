@@ -11,7 +11,7 @@
 
 namespace h4cc\AliceFixturesBundle\Loader;
 
-use Nelmio\Alice\LoaderInterface;
+use Nelmio\Alice\Fixtures\Loader;
 
 /**
  * Interface FactoryInterface
@@ -23,9 +23,8 @@ interface FactoryInterface
     /**
      * Returns a loader for a specific type and locale.
      *
-     * @param $type
      * @param $locale
-     * @return LoaderInterface
+     * @return Loader
      */
-    public function getLoader($type, $locale);
+    public function getLoader($locale);
 }
