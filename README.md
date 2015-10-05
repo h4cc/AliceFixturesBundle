@@ -58,7 +58,7 @@ public function registerBundles()
     }
 }
 ```
-Keep in mind, that this bundle is capable of removing whole databases, so be carefull when using in production!
+Keep in mind, that this bundle is capable of removing whole databases, so be careful when using in production!
 
 
 ## Configuration
