@@ -23,10 +23,9 @@ interface FixtureManagerInterface
      * Does _not_ persist them, use persist() for that.
      *
      * @param array $files
-     * @param string $type
      * @return array
      */
-    public function loadFiles(array $files, $type = 'yaml');
+    public function loadFiles(array $files);
 
     /**
      * Creates a new configured fixture set.

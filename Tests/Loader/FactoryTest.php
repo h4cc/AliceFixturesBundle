@@ -33,21 +33,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLoader()
     {
-        $loader = $this->factory->getLoader('yaml', 'de_DE');
+        $loader = $this->factory->getLoader('de_DE');
 
-        $this->assertInstanceOf('\Nelmio\Alice\Loader\Yaml', $loader);
-
-        $loader = $this->factory->getLoader('php', 'de_DE');
-
-        $this->assertInstanceOf('\Nelmio\Alice\Loader\Base', $loader);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Unknown loader type 'foo'.
-     */
-    public function testException()
-    {
-        $this->factory->getLoader('foo', 'bar');
+        $this->assertInstanceOf('\Nelmio\Alice\Fixtures\Loader', $loader);
     }
 }

@@ -11,7 +11,7 @@
 
 namespace h4cc\AliceFixturesBundle\ORM;
 
-use Nelmio\Alice\ORMInterface as NelmioORMInterface;
+use Nelmio\Alice\PersisterInterface as NelmioORMInterface;
 
 /**
  * Interface for Object Relation Mapping operations.

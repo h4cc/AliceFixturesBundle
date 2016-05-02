@@ -13,8 +13,7 @@ namespace h4cc\AliceFixturesBundle\Fixtures;
 
 use h4cc\AliceFixturesBundle\ORM\ORMInterface;
 use Nelmio\Alice\Fixtures;
-use Nelmio\Alice\Loader\Base;
-use Nelmio\Alice\LoaderInterface;
+use Nelmio\Alice\Fixtures\Loader;
 use Nelmio\Alice\ProcessorInterface;
 use Psr\Log\LoggerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -53,7 +52,7 @@ class FixtureManager implements FixtureManagerInterface
      */
     protected $options = array();
     /**
-     * @var \Nelmio\Alice\ORM\Doctrine
+     * @var \Nelmio\Alice\Persister\Doctrine
      */
     protected $orm;
     /**
@@ -164,7 +163,7 @@ class FixtureManager implements FixtureManagerInterface
 
     /**
      * @param FixtureSet $set
-     * @return \Nelmio\Alice\LoaderInterface[]
+     * @return \Nelmio\Alice\Fixtures\Loader[]
      */
     private function createNeededLoaders(FixtureSet $set)
     {
@@ -173,7 +172,7 @@ class FixtureManager implements FixtureManagerInterface
         foreach ($set->getFiles() as $file) {
             $type = $file['type'];
             if (!isset($loaders[$type])) {
-                $loader = $this->loaderFactory->getLoader($type, $set->getLocale());
+                $loader = $this->loaderFactory->getLoader($set->getLocale());
                 $this->configureLoader($loader);
                 $loaders[$type] = $loader;
                 $this->logDebug("Created loader for type '$type'.");
@@ -273,12 +272,12 @@ class FixtureManager implements FixtureManagerInterface
     /**
      * Sets all needed options and dependencies to a loader.
      *
-     * @param LoaderInterface $loader
+     * @param Loader $loader
      */
-    protected function configureLoader(LoaderInterface $loader)
+    protected function configureLoader(Loader $loader)
     {
-        if ($loader instanceof Base) {
-            $loader->setORM($this->getORM());
+        if ($loader instanceof Loader) {
+            $loader->setPersister($this->getORM());
             if ($this->logger) {
                 $loader->setLogger($this->logger);
             }

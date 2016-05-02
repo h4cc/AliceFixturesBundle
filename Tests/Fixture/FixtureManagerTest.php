@@ -12,7 +12,8 @@
 namespace h4cc\AliceFixturesBundle\Tests\Fixtures;
 
 use h4cc\AliceFixturesBundle\Fixtures\FixtureManager;
-use Nelmio\Alice\Loader\Yaml;
+
+use Nelmio\Alice\Fixtures\Loader;
 
 /**
  * Class FixtureManagerTest
@@ -54,9 +55,8 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
           ->disableOriginalConstructor()
           ->getMock();
 
-        $this->yamlLoaderMock = $this->getMockBuilder('\Nelmio\Alice\Loader\Yaml')
+        $this->yamlLoaderMock = $this->getMockBuilder('\Nelmio\Alice\Fixtures\Loader')
           ->setMethods(array('setProviders', 'addProvider', 'load'))
-          ->disableOriginalConstructor()
           ->getMock();
 
         $this->factoryMock = $this->getMockBuilder('\h4cc\AliceFixturesBundle\Loader\FactoryInterface')
@@ -132,7 +132,7 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
     public function testLoadYaml()
     {
         $this->factoryMock->expects($this->any())->method('getLoader')
-          ->with('yaml', 'en_EN')->will($this->returnValue(new Yaml()));
+          ->with('en_EN')->will($this->returnValue(new Loader()));
 
         $this->managerRegistryMock->expects($this->any())->method('getManagerForClass')
           ->will($this->returnValue($this->objectManagerMock));
@@ -146,7 +146,7 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
     public function testProcessor()
     {
         $this->factoryMock->expects($this->any())->method('getLoader')
-          ->with('yaml', 'en_EN')->will($this->returnValue(new Yaml()));
+          ->with('en_EN')->will($this->returnValue(new Loader()));
 
         $this->managerRegistryMock->expects($this->any())->method('getManagerForClass')
           ->will($this->returnValue($this->objectManagerMock));
@@ -185,7 +185,7 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
     public function testProviders()
     {
         $this->factoryMock->expects($this->any())->method('getLoader')
-          ->with('yaml', 'en_EN')->will($this->returnValue($this->yamlLoaderMock));
+          ->with('en_EN')->will($this->returnValue($this->yamlLoaderMock));
 
         $this->yamlLoaderMock->expects($this->once())->method('load')->will($this->returnValue(array()));
 
@@ -207,7 +207,7 @@ class FixtureManagerTest extends \PHPUnit_Framework_TestCase
     {
         // We need a real YAML Loader for this.
         $this->factoryMock->expects($this->any())->method('getLoader')
-          ->with('yaml', 'en_EN')->will($this->returnValue(new Yaml()));
+          ->with('en_EN')->will($this->returnValue(new Loader()));
 
         $this->managerRegistryMock->expects($this->any())->method('getManagerForClass')
           ->will($this->returnValue($this->objectManagerMock));
