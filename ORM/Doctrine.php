@@ -43,10 +43,17 @@ class Doctrine implements ORMInterface
     public function persist(array $objects)
     {
         foreach ($objects as $object) {
-            $manager = $this->getManagerFor($object);
-            $this->managersToFlush->attach($manager);
+            $manager = null;
 
-            $manager->persist($object);
+            try {
+                $manager = $this->getManagerFor($object);
+            } catch (\RuntimeException $e) {}
+
+            if (null !== $manager) {
+                $this->managersToFlush->attach($manager);
+
+                $manager->persist($object);
+            }
         }
 
         $this->flush();
@@ -137,4 +144,3 @@ class Doctrine implements ORMInterface
         $this->managersToFlush->removeAll($this->managersToFlush);
     }
 }
- 
